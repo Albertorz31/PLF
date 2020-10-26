@@ -1,0 +1,4476 @@
+Rules useless in parser due to conflicts
+
+  128 operador_relacional: '<'
+  129                    | '>'
+
+  130 operador_logico: '&'
+  131                | '|'
+  132                | '!'
+
+  134 operador_aritmetico: '-'
+  135                    | '+'
+
+
+Estado 72 conflictos: 8 desplazamiento(s)/reducción(ones)
+Estado 74 conflictos: 13 reducción(ones)/reducción(ones)
+Estado 100 conflictos: 3 desplazamiento(s)/reducción(ones)
+Estado 101 conflictos: 3 desplazamiento(s)/reducción(ones)
+Estado 103 conflictos: 12 reducción(ones)/reducción(ones)
+Estado 134 conflictos: 15 desplazamiento(s)/reducción(ones)
+Estado 144 conflictos: 13 reducción(ones)/reducción(ones)
+Estado 146 conflictos: 14 reducción(ones)/reducción(ones)
+Estado 147 conflictos: 13 reducción(ones)/reducción(ones)
+Estado 148 conflictos: 13 reducción(ones)/reducción(ones)
+Estado 149 conflictos: 13 reducción(ones)/reducción(ones)
+Estado 153 conflictos: 13 reducción(ones)/reducción(ones)
+Estado 154 conflictos: 13 reducción(ones)/reducción(ones)
+Estado 155 conflictos: 13 reducción(ones)/reducción(ones)
+Estado 166 conflictos: 15 desplazamiento(s)/reducción(ones)
+Estado 173 conflictos: 1 reducción(ones)/reducción(ones)
+Estado 206 conflictos: 15 desplazamiento(s)/reducción(ones)
+Estado 208 conflictos: 15 desplazamiento(s)/reducción(ones)
+Estado 225 conflictos: 1 desplazamiento(s)/reducción(ones)
+Estado 236 conflictos: 15 desplazamiento(s)/reducción(ones)
+
+
+Gramática
+
+    0 $accept: Programa $end
+
+    1 Programa: MAIN '(' D1 ')' D2 '{' D3 D4 '}'
+
+    2 D1: par_lin_ord
+    3   | /* vacío */
+
+    4 D2: dec_lin_ord
+    5   | /* vacío */
+
+    6 D3: dec_var_loc
+    7   | /* vacío */
+
+    8 D4: D5
+    9   | /* vacío */
+
+   10 D5: sentencia
+   11   | sentencia D5
+
+   12 par_lin_ord: IDENTIFICADOR ',' IDENTIFICADOR
+
+   13 dec_lin_ord: declaracion declaracion
+
+   14 dec_var_loc: declaracion
+   15            | declaracion dec_var_loc
+
+   16 declaracion: D6 D13
+
+   17 D13: especificacion_declaracion D10 D11 ';'
+
+   18 D6: D7
+   19   | D8
+
+   20 D7: D9
+   21   | D9 D8
+
+   22 D8: tipo
+
+   23 D9: esp_alm_var
+   24   | esp_alm_var D9
+
+   25 D10: inicializacion_variable
+   26    | /* vacío */
+
+   27 D11: D12
+   28    | /* vacío */
+
+   29 D12: '.' D13
+
+   30 esp_alm_var: AUTO
+   31            | EXTERN
+   32            | REGISTER
+   33            | STATIC
+
+   34 tipo: D14
+   35     | FLOAT
+   36     | CHAR
+   37     | DOUBLE
+
+   38 D14: INT
+   39    | D15
+   40    | D16
+   41    | D17
+
+   42 D15: SHORT
+   43    | SHORT INT
+
+   44 D16: UNSIGNED
+   45    | UNSIGNED INT
+
+   46 D17: LONG
+   47    | LONG INT
+   48    | LONG FLOAT
+
+   49 especificacion_declaracion: nombre_variable
+   50                           | declaracion_puntero
+   51                           | '(' especificacion_declaracion ')'
+
+   52 nombre_variable: IDENTIFICADOR
+
+   53 declaracion_puntero: '*' especificacion_declaracion
+
+   54 inicializacion_variable: '=' D18
+
+   55 D18: valor_inicial
+   56    | '{' D19 '}'
+
+   57 D19: valor_inicial
+   58    | valor_inicial ',' D19
+
+   59 valor_inicial: expresion
+
+   60 sentencia: sentencia_break
+   61          | sentencia_continue
+   62          | sentencia_default
+   63          | bucle_do_while
+   64          | expresion ';'
+   65          | bucle_for
+   66          | sentencia_goto
+   67          | sentencia_if
+   68          | etiqueta sentencia
+   69          | sentencia_NULL
+   70          | sentencia_return
+   71          | bucle_while
+
+   72 sentencia_break: BREAK ';'
+
+   73 sentencia_continue: CONTINUE ';'
+
+   74 sentencia_default: DEFAULT ':' sentencia
+
+   75 bucle_do_while: DO sentencia WHILE '(' expresion ')' ';'
+
+   76 bucle_for: FOR '(' D20 ';' D22 ';' D20 ')' sentencia
+
+   77 D20: D21
+   78    | /* vacío */
+
+   79 D21: expresion
+   80    | expresion ',' D21
+
+   81 D22: expresion
+   82    | /* vacío */
+
+   83 sentencia_goto: GOTO etiqueta ';'
+
+   84 sentencia_if: IF '(' expresion ')' sentencia D23
+
+   85 D23: D24
+   86    | /* vacío */
+
+   87 D24: ELSE sentencia
+   88    | ELSE sentencia D24
+
+   89 etiqueta: IDENTIFICADOR ':'
+
+   90 sentencia_NULL: ';'
+
+   91 sentencia_return: RETURN D25 ';'
+
+   92 D25: expresion
+   93    | /* vacío */
+
+   94 bucle_while: WHILE '(' expresion ')' sentencia
+
+   95 expresion: expresion operador_binario expresion
+   96          | operando_expresion
+   97          | expresion_ternaria
+   98          | operador_unario expresion
+   99          | lvalor operador_asignacion expresion
+  100          | lvalor operador_incremento
+  101          | lvalor operador_decremento
+  102          | operador_incremento lvalor
+  103          | operador_decremento lvalor
+
+  104 operador_binario: operador_unario
+  105                 | operador_relacional
+  106                 | operador_logico
+  107                 | operador_aritmetico
+  108                 | operador_nivel_bit
+
+  109 operador_unario: cast
+  110                | operador_sizeof
+  111                | operador_incremento
+  112                | operador_decremento
+  113                | '*'
+  114                | '&'
+  115                | '-'
+  116                | '~'
+  117                | '|'
+
+  118 cast: '(' tipo ')'
+
+  119 operador_sizeof: SIZEOF '(' objeto ')'
+
+  120 objeto: tipo
+  121       | expresion
+
+  122 operador_incremento: '+'
+
+  123 operador_decremento: '-'
+
+  124 operador_relacional: '='
+  125                    | '!'
+  126                    | '<'
+  127                    | '>'
+  128                    | '<'
+  129                    | '>'
+
+  130 operador_logico: '&'
+  131                | '|'
+  132                | '!'
+
+  133 operador_aritmetico: '*'
+  134                    | '-'
+  135                    | '+'
+  136                    | '/'
+  137                    | '%'
+
+  138 operador_nivel_bit: '&'
+  139                   | '|'
+  140                   | '^'
+  141                   | '<'
+  142                   | '>'
+
+  143 operando_expresion: nombre
+  144                   | constante_numerica
+  145                   | constante_caracter
+  146                   | constante_cadena
+  147                   | '(' expresion ')'
+
+  148 nombre: nombre_variable
+
+  149 constante_numerica: entero
+  150                   | real
+
+  151 constante_caracter: CARACTER
+
+  152 constante_cadena: '"' D28 '"'
+
+  153 D28: CARACTER
+  154    | CARACTER D28
+
+  155 entero: NUMERO_ENTERO
+
+  156 real: NUMERO_REAL
+
+  157 expresion_ternaria: '(' expresion ')' '?' expresion ':' expresion
+
+  158 lvalor: nombre
+  159       | ref_dir_ind
+  160       | '(' lvalor ')'
+
+  161 ref_dir_ind: '*' expresion_puntero
+
+  162 expresion_puntero: expresion
+
+  163 operador_asignacion: D26 '='
+
+  164 D26: D27
+  165    | /* vacío */
+
+  166 D27: operador_aritmetico
+  167    | operador_nivel_bit
+
+
+Terminales con las reglas donde aparecen
+
+$end (0) 0
+'!' (33) 125 132
+'"' (34) 152
+'%' (37) 137
+'&' (38) 114 130 138
+'(' (40) 1 51 75 76 84 94 118 119 147 157 160
+')' (41) 1 51 75 76 84 94 118 119 147 157 160
+'*' (42) 53 113 133 161
+'+' (43) 122 135
+',' (44) 12 58 80
+'-' (45) 115 123 134
+'.' (46) 29
+'/' (47) 136
+':' (58) 74 89 157
+';' (59) 17 64 72 73 75 76 83 90 91
+'<' (60) 126 128 141
+'=' (61) 54 124 163
+'>' (62) 127 129 142
+'?' (63) 157
+'^' (94) 140
+'{' (123) 1 56
+'|' (124) 117 131 139
+'}' (125) 1 56
+'~' (126) 116
+error (256)
+IDENTIFICADOR (258) 12 52 89
+NUMERO_ENTERO (259) 155
+NUMERO_REAL (260) 156
+CARACTER (261) 151 153 154
+MAIN (262) 1
+AUTO (263) 30
+LONG (264) 46 47 48
+INT (265) 38 43 45 47
+FLOAT (266) 35 48
+CHAR (267) 36
+DOUBLE (268) 37
+EXTERN (269) 31
+REGISTER (270) 32
+STATIC (271) 33
+SHORT (272) 42 43
+UNSIGNED (273) 44 45
+BREAK (274) 72
+CONTINUE (275) 73
+DEFAULT (276) 74
+DO (277) 75
+WHILE (278) 75 94
+FOR (279) 76
+GOTO (280) 83
+IF (281) 84
+ELSE (282) 87 88
+RETURN (283) 91
+SIZEOF (284) 119
+
+
+No terminales con las reglas donde aparecen
+
+$accept (53)
+    en la izquierda: 0
+Programa (54)
+    en la izquierda: 1, en la derecha: 0
+D1 (55)
+    en la izquierda: 2 3, en la derecha: 1
+D2 (56)
+    en la izquierda: 4 5, en la derecha: 1
+D3 (57)
+    en la izquierda: 6 7, en la derecha: 1
+D4 (58)
+    en la izquierda: 8 9, en la derecha: 1
+D5 (59)
+    en la izquierda: 10 11, en la derecha: 8 11
+par_lin_ord (60)
+    en la izquierda: 12, en la derecha: 2
+dec_lin_ord (61)
+    en la izquierda: 13, en la derecha: 4
+dec_var_loc (62)
+    en la izquierda: 14 15, en la derecha: 6 15
+declaracion (63)
+    en la izquierda: 16, en la derecha: 13 14 15
+D13 (64)
+    en la izquierda: 17, en la derecha: 16 29
+D6 (65)
+    en la izquierda: 18 19, en la derecha: 16
+D7 (66)
+    en la izquierda: 20 21, en la derecha: 18
+D8 (67)
+    en la izquierda: 22, en la derecha: 19 21
+D9 (68)
+    en la izquierda: 23 24, en la derecha: 20 21 24
+D10 (69)
+    en la izquierda: 25 26, en la derecha: 17
+D11 (70)
+    en la izquierda: 27 28, en la derecha: 17
+D12 (71)
+    en la izquierda: 29, en la derecha: 27
+esp_alm_var (72)
+    en la izquierda: 30 31 32 33, en la derecha: 23 24
+tipo (73)
+    en la izquierda: 34 35 36 37, en la derecha: 22 118 120
+D14 (74)
+    en la izquierda: 38 39 40 41, en la derecha: 34
+D15 (75)
+    en la izquierda: 42 43, en la derecha: 39
+D16 (76)
+    en la izquierda: 44 45, en la derecha: 40
+D17 (77)
+    en la izquierda: 46 47 48, en la derecha: 41
+especificacion_declaracion (78)
+    en la izquierda: 49 50 51, en la derecha: 17 51 53
+nombre_variable (79)
+    en la izquierda: 52, en la derecha: 49 148
+declaracion_puntero (80)
+    en la izquierda: 53, en la derecha: 50
+inicializacion_variable (81)
+    en la izquierda: 54, en la derecha: 25
+D18 (82)
+    en la izquierda: 55 56, en la derecha: 54
+D19 (83)
+    en la izquierda: 57 58, en la derecha: 56 58
+valor_inicial (84)
+    en la izquierda: 59, en la derecha: 55 57 58
+sentencia (85)
+    en la izquierda: 60 61 62 63 64 65 66 67 68 69 70 71, en la derecha:
+    10 11 68 74 75 76 84 87 88 94
+sentencia_break (86)
+    en la izquierda: 72, en la derecha: 60
+sentencia_continue (87)
+    en la izquierda: 73, en la derecha: 61
+sentencia_default (88)
+    en la izquierda: 74, en la derecha: 62
+bucle_do_while (89)
+    en la izquierda: 75, en la derecha: 63
+bucle_for (90)
+    en la izquierda: 76, en la derecha: 65
+D20 (91)
+    en la izquierda: 77 78, en la derecha: 76
+D21 (92)
+    en la izquierda: 79 80, en la derecha: 77 80
+D22 (93)
+    en la izquierda: 81 82, en la derecha: 76
+sentencia_goto (94)
+    en la izquierda: 83, en la derecha: 66
+sentencia_if (95)
+    en la izquierda: 84, en la derecha: 67
+D23 (96)
+    en la izquierda: 85 86, en la derecha: 84
+D24 (97)
+    en la izquierda: 87 88, en la derecha: 85 88
+etiqueta (98)
+    en la izquierda: 89, en la derecha: 68 83
+sentencia_NULL (99)
+    en la izquierda: 90, en la derecha: 69
+sentencia_return (100)
+    en la izquierda: 91, en la derecha: 70
+D25 (101)
+    en la izquierda: 92 93, en la derecha: 91
+bucle_while (102)
+    en la izquierda: 94, en la derecha: 71
+expresion (103)
+    en la izquierda: 95 96 97 98 99 100 101 102 103, en la derecha:
+    59 64 75 79 80 81 84 92 94 95 98 99 121 147 157 162
+operador_binario (104)
+    en la izquierda: 104 105 106 107 108, en la derecha: 95
+operador_unario (105)
+    en la izquierda: 109 110 111 112 113 114 115 116 117, en la derecha:
+    98 104
+cast (106)
+    en la izquierda: 118, en la derecha: 109
+operador_sizeof (107)
+    en la izquierda: 119, en la derecha: 110
+objeto (108)
+    en la izquierda: 120 121, en la derecha: 119
+operador_incremento (109)
+    en la izquierda: 122, en la derecha: 100 102 111
+operador_decremento (110)
+    en la izquierda: 123, en la derecha: 101 103 112
+operador_relacional (111)
+    en la izquierda: 124 125 126 127 128 129, en la derecha: 105
+operador_logico (112)
+    en la izquierda: 130 131 132, en la derecha: 106
+operador_aritmetico (113)
+    en la izquierda: 133 134 135 136 137, en la derecha: 107 166
+operador_nivel_bit (114)
+    en la izquierda: 138 139 140 141 142, en la derecha: 108 167
+operando_expresion (115)
+    en la izquierda: 143 144 145 146 147, en la derecha: 96
+nombre (116)
+    en la izquierda: 148, en la derecha: 143 158
+constante_numerica (117)
+    en la izquierda: 149 150, en la derecha: 144
+constante_caracter (118)
+    en la izquierda: 151, en la derecha: 145
+constante_cadena (119)
+    en la izquierda: 152, en la derecha: 146
+D28 (120)
+    en la izquierda: 153 154, en la derecha: 152 154
+entero (121)
+    en la izquierda: 155, en la derecha: 149
+real (122)
+    en la izquierda: 156, en la derecha: 150
+expresion_ternaria (123)
+    en la izquierda: 157, en la derecha: 97
+lvalor (124)
+    en la izquierda: 158 159 160, en la derecha: 99 100 101 102 103
+    160
+ref_dir_ind (125)
+    en la izquierda: 161, en la derecha: 159
+expresion_puntero (126)
+    en la izquierda: 162, en la derecha: 161
+operador_asignacion (127)
+    en la izquierda: 163, en la derecha: 99
+D26 (128)
+    en la izquierda: 164 165, en la derecha: 163
+D27 (129)
+    en la izquierda: 166 167, en la derecha: 164
+
+
+estado 0
+
+    0 $accept: . Programa $end
+
+    MAIN  desplazar e ir al estado 1
+
+    Programa  ir al estado 2
+
+
+estado 1
+
+    1 Programa: MAIN . '(' D1 ')' D2 '{' D3 D4 '}'
+
+    '('  desplazar e ir al estado 3
+
+
+estado 2
+
+    0 $accept: Programa . $end
+
+    $end  desplazar e ir al estado 4
+
+
+estado 3
+
+    1 Programa: MAIN '(' . D1 ')' D2 '{' D3 D4 '}'
+
+    IDENTIFICADOR  desplazar e ir al estado 5
+
+    $default  reduce usando la regla 3 (D1)
+
+    D1           ir al estado 6
+    par_lin_ord  ir al estado 7
+
+
+estado 4
+
+    0 $accept: Programa $end .
+
+    $default  aceptar
+
+
+estado 5
+
+   12 par_lin_ord: IDENTIFICADOR . ',' IDENTIFICADOR
+
+    ','  desplazar e ir al estado 8
+
+
+estado 6
+
+    1 Programa: MAIN '(' D1 . ')' D2 '{' D3 D4 '}'
+
+    ')'  desplazar e ir al estado 9
+
+
+estado 7
+
+    2 D1: par_lin_ord .
+
+    $default  reduce usando la regla 2 (D1)
+
+
+estado 8
+
+   12 par_lin_ord: IDENTIFICADOR ',' . IDENTIFICADOR
+
+    IDENTIFICADOR  desplazar e ir al estado 10
+
+
+estado 9
+
+    1 Programa: MAIN '(' D1 ')' . D2 '{' D3 D4 '}'
+
+    AUTO      desplazar e ir al estado 11
+    LONG      desplazar e ir al estado 12
+    INT       desplazar e ir al estado 13
+    FLOAT     desplazar e ir al estado 14
+    CHAR      desplazar e ir al estado 15
+    DOUBLE    desplazar e ir al estado 16
+    EXTERN    desplazar e ir al estado 17
+    REGISTER  desplazar e ir al estado 18
+    STATIC    desplazar e ir al estado 19
+    SHORT     desplazar e ir al estado 20
+    UNSIGNED  desplazar e ir al estado 21
+
+    $default  reduce usando la regla 5 (D2)
+
+    D2           ir al estado 22
+    dec_lin_ord  ir al estado 23
+    declaracion  ir al estado 24
+    D6           ir al estado 25
+    D7           ir al estado 26
+    D8           ir al estado 27
+    D9           ir al estado 28
+    esp_alm_var  ir al estado 29
+    tipo         ir al estado 30
+    D14          ir al estado 31
+    D15          ir al estado 32
+    D16          ir al estado 33
+    D17          ir al estado 34
+
+
+estado 10
+
+   12 par_lin_ord: IDENTIFICADOR ',' IDENTIFICADOR .
+
+    $default  reduce usando la regla 12 (par_lin_ord)
+
+
+estado 11
+
+   30 esp_alm_var: AUTO .
+
+    $default  reduce usando la regla 30 (esp_alm_var)
+
+
+estado 12
+
+   46 D17: LONG .
+   47    | LONG . INT
+   48    | LONG . FLOAT
+
+    INT    desplazar e ir al estado 35
+    FLOAT  desplazar e ir al estado 36
+
+    $default  reduce usando la regla 46 (D17)
+
+
+estado 13
+
+   38 D14: INT .
+
+    $default  reduce usando la regla 38 (D14)
+
+
+estado 14
+
+   35 tipo: FLOAT .
+
+    $default  reduce usando la regla 35 (tipo)
+
+
+estado 15
+
+   36 tipo: CHAR .
+
+    $default  reduce usando la regla 36 (tipo)
+
+
+estado 16
+
+   37 tipo: DOUBLE .
+
+    $default  reduce usando la regla 37 (tipo)
+
+
+estado 17
+
+   31 esp_alm_var: EXTERN .
+
+    $default  reduce usando la regla 31 (esp_alm_var)
+
+
+estado 18
+
+   32 esp_alm_var: REGISTER .
+
+    $default  reduce usando la regla 32 (esp_alm_var)
+
+
+estado 19
+
+   33 esp_alm_var: STATIC .
+
+    $default  reduce usando la regla 33 (esp_alm_var)
+
+
+estado 20
+
+   42 D15: SHORT .
+   43    | SHORT . INT
+
+    INT  desplazar e ir al estado 37
+
+    $default  reduce usando la regla 42 (D15)
+
+
+estado 21
+
+   44 D16: UNSIGNED .
+   45    | UNSIGNED . INT
+
+    INT  desplazar e ir al estado 38
+
+    $default  reduce usando la regla 44 (D16)
+
+
+estado 22
+
+    1 Programa: MAIN '(' D1 ')' D2 . '{' D3 D4 '}'
+
+    '{'  desplazar e ir al estado 39
+
+
+estado 23
+
+    4 D2: dec_lin_ord .
+
+    $default  reduce usando la regla 4 (D2)
+
+
+estado 24
+
+   13 dec_lin_ord: declaracion . declaracion
+
+    AUTO      desplazar e ir al estado 11
+    LONG      desplazar e ir al estado 12
+    INT       desplazar e ir al estado 13
+    FLOAT     desplazar e ir al estado 14
+    CHAR      desplazar e ir al estado 15
+    DOUBLE    desplazar e ir al estado 16
+    EXTERN    desplazar e ir al estado 17
+    REGISTER  desplazar e ir al estado 18
+    STATIC    desplazar e ir al estado 19
+    SHORT     desplazar e ir al estado 20
+    UNSIGNED  desplazar e ir al estado 21
+
+    declaracion  ir al estado 40
+    D6           ir al estado 25
+    D7           ir al estado 26
+    D8           ir al estado 27
+    D9           ir al estado 28
+    esp_alm_var  ir al estado 29
+    tipo         ir al estado 30
+    D14          ir al estado 31
+    D15          ir al estado 32
+    D16          ir al estado 33
+    D17          ir al estado 34
+
+
+estado 25
+
+   16 declaracion: D6 . D13
+
+    IDENTIFICADOR  desplazar e ir al estado 41
+    '*'            desplazar e ir al estado 42
+    '('            desplazar e ir al estado 43
+
+    D13                         ir al estado 44
+    especificacion_declaracion  ir al estado 45
+    nombre_variable             ir al estado 46
+    declaracion_puntero         ir al estado 47
+
+
+estado 26
+
+   18 D6: D7 .
+
+    $default  reduce usando la regla 18 (D6)
+
+
+estado 27
+
+   19 D6: D8 .
+
+    $default  reduce usando la regla 19 (D6)
+
+
+estado 28
+
+   20 D7: D9 .
+   21   | D9 . D8
+
+    LONG      desplazar e ir al estado 12
+    INT       desplazar e ir al estado 13
+    FLOAT     desplazar e ir al estado 14
+    CHAR      desplazar e ir al estado 15
+    DOUBLE    desplazar e ir al estado 16
+    SHORT     desplazar e ir al estado 20
+    UNSIGNED  desplazar e ir al estado 21
+
+    $default  reduce usando la regla 20 (D7)
+
+    D8    ir al estado 48
+    tipo  ir al estado 30
+    D14   ir al estado 31
+    D15   ir al estado 32
+    D16   ir al estado 33
+    D17   ir al estado 34
+
+
+estado 29
+
+   23 D9: esp_alm_var .
+   24   | esp_alm_var . D9
+
+    AUTO      desplazar e ir al estado 11
+    EXTERN    desplazar e ir al estado 17
+    REGISTER  desplazar e ir al estado 18
+    STATIC    desplazar e ir al estado 19
+
+    $default  reduce usando la regla 23 (D9)
+
+    D9           ir al estado 49
+    esp_alm_var  ir al estado 29
+
+
+estado 30
+
+   22 D8: tipo .
+
+    $default  reduce usando la regla 22 (D8)
+
+
+estado 31
+
+   34 tipo: D14 .
+
+    $default  reduce usando la regla 34 (tipo)
+
+
+estado 32
+
+   39 D14: D15 .
+
+    $default  reduce usando la regla 39 (D14)
+
+
+estado 33
+
+   40 D14: D16 .
+
+    $default  reduce usando la regla 40 (D14)
+
+
+estado 34
+
+   41 D14: D17 .
+
+    $default  reduce usando la regla 41 (D14)
+
+
+estado 35
+
+   47 D17: LONG INT .
+
+    $default  reduce usando la regla 47 (D17)
+
+
+estado 36
+
+   48 D17: LONG FLOAT .
+
+    $default  reduce usando la regla 48 (D17)
+
+
+estado 37
+
+   43 D15: SHORT INT .
+
+    $default  reduce usando la regla 43 (D15)
+
+
+estado 38
+
+   45 D16: UNSIGNED INT .
+
+    $default  reduce usando la regla 45 (D16)
+
+
+estado 39
+
+    1 Programa: MAIN '(' D1 ')' D2 '{' . D3 D4 '}'
+
+    AUTO      desplazar e ir al estado 11
+    LONG      desplazar e ir al estado 12
+    INT       desplazar e ir al estado 13
+    FLOAT     desplazar e ir al estado 14
+    CHAR      desplazar e ir al estado 15
+    DOUBLE    desplazar e ir al estado 16
+    EXTERN    desplazar e ir al estado 17
+    REGISTER  desplazar e ir al estado 18
+    STATIC    desplazar e ir al estado 19
+    SHORT     desplazar e ir al estado 20
+    UNSIGNED  desplazar e ir al estado 21
+
+    $default  reduce usando la regla 7 (D3)
+
+    D3           ir al estado 50
+    dec_var_loc  ir al estado 51
+    declaracion  ir al estado 52
+    D6           ir al estado 25
+    D7           ir al estado 26
+    D8           ir al estado 27
+    D9           ir al estado 28
+    esp_alm_var  ir al estado 29
+    tipo         ir al estado 30
+    D14          ir al estado 31
+    D15          ir al estado 32
+    D16          ir al estado 33
+    D17          ir al estado 34
+
+
+estado 40
+
+   13 dec_lin_ord: declaracion declaracion .
+
+    $default  reduce usando la regla 13 (dec_lin_ord)
+
+
+estado 41
+
+   52 nombre_variable: IDENTIFICADOR .
+
+    $default  reduce usando la regla 52 (nombre_variable)
+
+
+estado 42
+
+   53 declaracion_puntero: '*' . especificacion_declaracion
+
+    IDENTIFICADOR  desplazar e ir al estado 41
+    '*'            desplazar e ir al estado 42
+    '('            desplazar e ir al estado 43
+
+    especificacion_declaracion  ir al estado 53
+    nombre_variable             ir al estado 46
+    declaracion_puntero         ir al estado 47
+
+
+estado 43
+
+   51 especificacion_declaracion: '(' . especificacion_declaracion ')'
+
+    IDENTIFICADOR  desplazar e ir al estado 41
+    '*'            desplazar e ir al estado 42
+    '('            desplazar e ir al estado 43
+
+    especificacion_declaracion  ir al estado 54
+    nombre_variable             ir al estado 46
+    declaracion_puntero         ir al estado 47
+
+
+estado 44
+
+   16 declaracion: D6 D13 .
+
+    $default  reduce usando la regla 16 (declaracion)
+
+
+estado 45
+
+   17 D13: especificacion_declaracion . D10 D11 ';'
+
+    '='  desplazar e ir al estado 55
+
+    $default  reduce usando la regla 26 (D10)
+
+    D10                      ir al estado 56
+    inicializacion_variable  ir al estado 57
+
+
+estado 46
+
+   49 especificacion_declaracion: nombre_variable .
+
+    $default  reduce usando la regla 49 (especificacion_declaracion)
+
+
+estado 47
+
+   50 especificacion_declaracion: declaracion_puntero .
+
+    $default  reduce usando la regla 50 (especificacion_declaracion)
+
+
+estado 48
+
+   21 D7: D9 D8 .
+
+    $default  reduce usando la regla 21 (D7)
+
+
+estado 49
+
+   24 D9: esp_alm_var D9 .
+
+    $default  reduce usando la regla 24 (D9)
+
+
+estado 50
+
+    1 Programa: MAIN '(' D1 ')' D2 '{' D3 . D4 '}'
+
+    IDENTIFICADOR  desplazar e ir al estado 58
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    BREAK          desplazar e ir al estado 62
+    CONTINUE       desplazar e ir al estado 63
+    DEFAULT        desplazar e ir al estado 64
+    DO             desplazar e ir al estado 65
+    WHILE          desplazar e ir al estado 66
+    FOR            desplazar e ir al estado 67
+    GOTO           desplazar e ir al estado 68
+    IF             desplazar e ir al estado 69
+    RETURN         desplazar e ir al estado 70
+    SIZEOF         desplazar e ir al estado 71
+    '*'            desplazar e ir al estado 72
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    ';'            desplazar e ir al estado 78
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    $default  reduce usando la regla 9 (D4)
+
+    D4                   ir al estado 81
+    D5                   ir al estado 82
+    nombre_variable      ir al estado 83
+    sentencia            ir al estado 84
+    sentencia_break      ir al estado 85
+    sentencia_continue   ir al estado 86
+    sentencia_default    ir al estado 87
+    bucle_do_while       ir al estado 88
+    bucle_for            ir al estado 89
+    sentencia_goto       ir al estado 90
+    sentencia_if         ir al estado 91
+    etiqueta             ir al estado 92
+    sentencia_NULL       ir al estado 93
+    sentencia_return     ir al estado 94
+    bucle_while          ir al estado 95
+    expresion            ir al estado 96
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 110
+    ref_dir_ind          ir al estado 111
+
+
+estado 51
+
+    6 D3: dec_var_loc .
+
+    $default  reduce usando la regla 6 (D3)
+
+
+estado 52
+
+   14 dec_var_loc: declaracion .
+   15            | declaracion . dec_var_loc
+
+    AUTO      desplazar e ir al estado 11
+    LONG      desplazar e ir al estado 12
+    INT       desplazar e ir al estado 13
+    FLOAT     desplazar e ir al estado 14
+    CHAR      desplazar e ir al estado 15
+    DOUBLE    desplazar e ir al estado 16
+    EXTERN    desplazar e ir al estado 17
+    REGISTER  desplazar e ir al estado 18
+    STATIC    desplazar e ir al estado 19
+    SHORT     desplazar e ir al estado 20
+    UNSIGNED  desplazar e ir al estado 21
+
+    $default  reduce usando la regla 14 (dec_var_loc)
+
+    dec_var_loc  ir al estado 112
+    declaracion  ir al estado 52
+    D6           ir al estado 25
+    D7           ir al estado 26
+    D8           ir al estado 27
+    D9           ir al estado 28
+    esp_alm_var  ir al estado 29
+    tipo         ir al estado 30
+    D14          ir al estado 31
+    D15          ir al estado 32
+    D16          ir al estado 33
+    D17          ir al estado 34
+
+
+estado 53
+
+   53 declaracion_puntero: '*' especificacion_declaracion .
+
+    $default  reduce usando la regla 53 (declaracion_puntero)
+
+
+estado 54
+
+   51 especificacion_declaracion: '(' especificacion_declaracion . ')'
+
+    ')'  desplazar e ir al estado 113
+
+
+estado 55
+
+   54 inicializacion_variable: '=' . D18
+
+    IDENTIFICADOR  desplazar e ir al estado 41
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    SIZEOF         desplazar e ir al estado 71
+    '*'            desplazar e ir al estado 72
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    '{'            desplazar e ir al estado 114
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    nombre_variable      ir al estado 83
+    D18                  ir al estado 115
+    valor_inicial        ir al estado 116
+    expresion            ir al estado 117
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 110
+    ref_dir_ind          ir al estado 111
+
+
+estado 56
+
+   17 D13: especificacion_declaracion D10 . D11 ';'
+
+    '.'  desplazar e ir al estado 118
+
+    $default  reduce usando la regla 28 (D11)
+
+    D11  ir al estado 119
+    D12  ir al estado 120
+
+
+estado 57
+
+   25 D10: inicializacion_variable .
+
+    $default  reduce usando la regla 25 (D10)
+
+
+estado 58
+
+   52 nombre_variable: IDENTIFICADOR .
+   89 etiqueta: IDENTIFICADOR . ':'
+
+    ':'  desplazar e ir al estado 121
+
+    $default  reduce usando la regla 52 (nombre_variable)
+
+
+estado 59
+
+  155 entero: NUMERO_ENTERO .
+
+    $default  reduce usando la regla 155 (entero)
+
+
+estado 60
+
+  156 real: NUMERO_REAL .
+
+    $default  reduce usando la regla 156 (real)
+
+
+estado 61
+
+  151 constante_caracter: CARACTER .
+
+    $default  reduce usando la regla 151 (constante_caracter)
+
+
+estado 62
+
+   72 sentencia_break: BREAK . ';'
+
+    ';'  desplazar e ir al estado 122
+
+
+estado 63
+
+   73 sentencia_continue: CONTINUE . ';'
+
+    ';'  desplazar e ir al estado 123
+
+
+estado 64
+
+   74 sentencia_default: DEFAULT . ':' sentencia
+
+    ':'  desplazar e ir al estado 124
+
+
+estado 65
+
+   75 bucle_do_while: DO . sentencia WHILE '(' expresion ')' ';'
+
+    IDENTIFICADOR  desplazar e ir al estado 58
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    BREAK          desplazar e ir al estado 62
+    CONTINUE       desplazar e ir al estado 63
+    DEFAULT        desplazar e ir al estado 64
+    DO             desplazar e ir al estado 65
+    WHILE          desplazar e ir al estado 66
+    FOR            desplazar e ir al estado 67
+    GOTO           desplazar e ir al estado 68
+    IF             desplazar e ir al estado 69
+    RETURN         desplazar e ir al estado 70
+    SIZEOF         desplazar e ir al estado 71
+    '*'            desplazar e ir al estado 72
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    ';'            desplazar e ir al estado 78
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    nombre_variable      ir al estado 83
+    sentencia            ir al estado 125
+    sentencia_break      ir al estado 85
+    sentencia_continue   ir al estado 86
+    sentencia_default    ir al estado 87
+    bucle_do_while       ir al estado 88
+    bucle_for            ir al estado 89
+    sentencia_goto       ir al estado 90
+    sentencia_if         ir al estado 91
+    etiqueta             ir al estado 92
+    sentencia_NULL       ir al estado 93
+    sentencia_return     ir al estado 94
+    bucle_while          ir al estado 95
+    expresion            ir al estado 96
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 110
+    ref_dir_ind          ir al estado 111
+
+
+estado 66
+
+   94 bucle_while: WHILE . '(' expresion ')' sentencia
+
+    '('  desplazar e ir al estado 126
+
+
+estado 67
+
+   76 bucle_for: FOR . '(' D20 ';' D22 ';' D20 ')' sentencia
+
+    '('  desplazar e ir al estado 127
+
+
+estado 68
+
+   83 sentencia_goto: GOTO . etiqueta ';'
+
+    IDENTIFICADOR  desplazar e ir al estado 128
+
+    etiqueta  ir al estado 129
+
+
+estado 69
+
+   84 sentencia_if: IF . '(' expresion ')' sentencia D23
+
+    '('  desplazar e ir al estado 130
+
+
+estado 70
+
+   91 sentencia_return: RETURN . D25 ';'
+
+    IDENTIFICADOR  desplazar e ir al estado 41
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    SIZEOF         desplazar e ir al estado 71
+    '*'            desplazar e ir al estado 72
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    $default  reduce usando la regla 93 (D25)
+
+    nombre_variable      ir al estado 83
+    D25                  ir al estado 131
+    expresion            ir al estado 132
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 110
+    ref_dir_ind          ir al estado 111
+
+
+estado 71
+
+  119 operador_sizeof: SIZEOF . '(' objeto ')'
+
+    '('  desplazar e ir al estado 133
+
+
+estado 72
+
+  113 operador_unario: '*' .
+  161 ref_dir_ind: '*' . expresion_puntero
+
+    IDENTIFICADOR  desplazar e ir al estado 41
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    SIZEOF         desplazar e ir al estado 71
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    IDENTIFICADOR  [reduce usando la regla 113 (operador_unario)]
+    NUMERO_ENTERO  [reduce usando la regla 113 (operador_unario)]
+    NUMERO_REAL    [reduce usando la regla 113 (operador_unario)]
+    CARACTER       [reduce usando la regla 113 (operador_unario)]
+    SIZEOF         [reduce usando la regla 113 (operador_unario)]
+    '('            [reduce usando la regla 113 (operador_unario)]
+    '~'            [reduce usando la regla 113 (operador_unario)]
+    '"'            [reduce usando la regla 113 (operador_unario)]
+    $default       reduce usando la regla 113 (operador_unario)
+
+    nombre_variable      ir al estado 83
+    expresion            ir al estado 134
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 110
+    ref_dir_ind          ir al estado 111
+    expresion_puntero    ir al estado 135
+
+
+estado 73
+
+  122 operador_incremento: '+' .
+
+    $default  reduce usando la regla 122 (operador_incremento)
+
+
+estado 74
+
+  115 operador_unario: '-' .
+  123 operador_decremento: '-' .
+
+    IDENTIFICADOR  reduce usando la regla 115 (operador_unario)
+    IDENTIFICADOR  [reduce usando la regla 123 (operador_decremento)]
+    NUMERO_ENTERO  reduce usando la regla 115 (operador_unario)
+    NUMERO_ENTERO  [reduce usando la regla 123 (operador_decremento)]
+    NUMERO_REAL    reduce usando la regla 115 (operador_unario)
+    NUMERO_REAL    [reduce usando la regla 123 (operador_decremento)]
+    CARACTER       reduce usando la regla 115 (operador_unario)
+    CARACTER       [reduce usando la regla 123 (operador_decremento)]
+    SIZEOF         reduce usando la regla 115 (operador_unario)
+    SIZEOF         [reduce usando la regla 123 (operador_decremento)]
+    '*'            reduce usando la regla 115 (operador_unario)
+    '*'            [reduce usando la regla 123 (operador_decremento)]
+    '+'            reduce usando la regla 115 (operador_unario)
+    '+'            [reduce usando la regla 123 (operador_decremento)]
+    '-'            reduce usando la regla 115 (operador_unario)
+    '-'            [reduce usando la regla 123 (operador_decremento)]
+    '&'            reduce usando la regla 115 (operador_unario)
+    '&'            [reduce usando la regla 123 (operador_decremento)]
+    '|'            reduce usando la regla 115 (operador_unario)
+    '|'            [reduce usando la regla 123 (operador_decremento)]
+    '('            reduce usando la regla 115 (operador_unario)
+    '('            [reduce usando la regla 123 (operador_decremento)]
+    '~'            reduce usando la regla 115 (operador_unario)
+    '~'            [reduce usando la regla 123 (operador_decremento)]
+    '"'            reduce usando la regla 115 (operador_unario)
+    '"'            [reduce usando la regla 123 (operador_decremento)]
+    $default       reduce usando la regla 115 (operador_unario)
+
+
+estado 75
+
+  114 operador_unario: '&' .
+
+    $default  reduce usando la regla 114 (operador_unario)
+
+
+estado 76
+
+  117 operador_unario: '|' .
+
+    $default  reduce usando la regla 117 (operador_unario)
+
+
+estado 77
+
+  118 cast: '(' . tipo ')'
+  147 operando_expresion: '(' . expresion ')'
+  157 expresion_ternaria: '(' . expresion ')' '?' expresion ':' expresion
+  160 lvalor: '(' . lvalor ')'
+
+    IDENTIFICADOR  desplazar e ir al estado 41
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    LONG           desplazar e ir al estado 12
+    INT            desplazar e ir al estado 13
+    FLOAT          desplazar e ir al estado 14
+    CHAR           desplazar e ir al estado 15
+    DOUBLE         desplazar e ir al estado 16
+    SHORT          desplazar e ir al estado 20
+    UNSIGNED       desplazar e ir al estado 21
+    SIZEOF         desplazar e ir al estado 71
+    '*'            desplazar e ir al estado 72
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    tipo                 ir al estado 136
+    D14                  ir al estado 31
+    D15                  ir al estado 32
+    D16                  ir al estado 33
+    D17                  ir al estado 34
+    nombre_variable      ir al estado 83
+    expresion            ir al estado 137
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 138
+    ref_dir_ind          ir al estado 111
+
+
+estado 78
+
+   90 sentencia_NULL: ';' .
+
+    $default  reduce usando la regla 90 (sentencia_NULL)
+
+
+estado 79
+
+  116 operador_unario: '~' .
+
+    $default  reduce usando la regla 116 (operador_unario)
+
+
+estado 80
+
+  152 constante_cadena: '"' . D28 '"'
+
+    CARACTER  desplazar e ir al estado 139
+
+    D28  ir al estado 140
+
+
+estado 81
+
+    1 Programa: MAIN '(' D1 ')' D2 '{' D3 D4 . '}'
+
+    '}'  desplazar e ir al estado 141
+
+
+estado 82
+
+    8 D4: D5 .
+
+    $default  reduce usando la regla 8 (D4)
+
+
+estado 83
+
+  148 nombre: nombre_variable .
+
+    $default  reduce usando la regla 148 (nombre)
+
+
+estado 84
+
+   10 D5: sentencia .
+   11   | sentencia . D5
+
+    IDENTIFICADOR  desplazar e ir al estado 58
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    BREAK          desplazar e ir al estado 62
+    CONTINUE       desplazar e ir al estado 63
+    DEFAULT        desplazar e ir al estado 64
+    DO             desplazar e ir al estado 65
+    WHILE          desplazar e ir al estado 66
+    FOR            desplazar e ir al estado 67
+    GOTO           desplazar e ir al estado 68
+    IF             desplazar e ir al estado 69
+    RETURN         desplazar e ir al estado 70
+    SIZEOF         desplazar e ir al estado 71
+    '*'            desplazar e ir al estado 72
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    ';'            desplazar e ir al estado 78
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    $default  reduce usando la regla 10 (D5)
+
+    D5                   ir al estado 142
+    nombre_variable      ir al estado 83
+    sentencia            ir al estado 84
+    sentencia_break      ir al estado 85
+    sentencia_continue   ir al estado 86
+    sentencia_default    ir al estado 87
+    bucle_do_while       ir al estado 88
+    bucle_for            ir al estado 89
+    sentencia_goto       ir al estado 90
+    sentencia_if         ir al estado 91
+    etiqueta             ir al estado 92
+    sentencia_NULL       ir al estado 93
+    sentencia_return     ir al estado 94
+    bucle_while          ir al estado 95
+    expresion            ir al estado 96
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 110
+    ref_dir_ind          ir al estado 111
+
+
+estado 85
+
+   60 sentencia: sentencia_break .
+
+    $default  reduce usando la regla 60 (sentencia)
+
+
+estado 86
+
+   61 sentencia: sentencia_continue .
+
+    $default  reduce usando la regla 61 (sentencia)
+
+
+estado 87
+
+   62 sentencia: sentencia_default .
+
+    $default  reduce usando la regla 62 (sentencia)
+
+
+estado 88
+
+   63 sentencia: bucle_do_while .
+
+    $default  reduce usando la regla 63 (sentencia)
+
+
+estado 89
+
+   65 sentencia: bucle_for .
+
+    $default  reduce usando la regla 65 (sentencia)
+
+
+estado 90
+
+   66 sentencia: sentencia_goto .
+
+    $default  reduce usando la regla 66 (sentencia)
+
+
+estado 91
+
+   67 sentencia: sentencia_if .
+
+    $default  reduce usando la regla 67 (sentencia)
+
+
+estado 92
+
+   68 sentencia: etiqueta . sentencia
+
+    IDENTIFICADOR  desplazar e ir al estado 58
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    BREAK          desplazar e ir al estado 62
+    CONTINUE       desplazar e ir al estado 63
+    DEFAULT        desplazar e ir al estado 64
+    DO             desplazar e ir al estado 65
+    WHILE          desplazar e ir al estado 66
+    FOR            desplazar e ir al estado 67
+    GOTO           desplazar e ir al estado 68
+    IF             desplazar e ir al estado 69
+    RETURN         desplazar e ir al estado 70
+    SIZEOF         desplazar e ir al estado 71
+    '*'            desplazar e ir al estado 72
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    ';'            desplazar e ir al estado 78
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    nombre_variable      ir al estado 83
+    sentencia            ir al estado 143
+    sentencia_break      ir al estado 85
+    sentencia_continue   ir al estado 86
+    sentencia_default    ir al estado 87
+    bucle_do_while       ir al estado 88
+    bucle_for            ir al estado 89
+    sentencia_goto       ir al estado 90
+    sentencia_if         ir al estado 91
+    etiqueta             ir al estado 92
+    sentencia_NULL       ir al estado 93
+    sentencia_return     ir al estado 94
+    bucle_while          ir al estado 95
+    expresion            ir al estado 96
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 110
+    ref_dir_ind          ir al estado 111
+
+
+estado 93
+
+   69 sentencia: sentencia_NULL .
+
+    $default  reduce usando la regla 69 (sentencia)
+
+
+estado 94
+
+   70 sentencia: sentencia_return .
+
+    $default  reduce usando la regla 70 (sentencia)
+
+
+estado 95
+
+   71 sentencia: bucle_while .
+
+    $default  reduce usando la regla 71 (sentencia)
+
+
+estado 96
+
+   64 sentencia: expresion . ';'
+   95 expresion: expresion . operador_binario expresion
+
+    SIZEOF  desplazar e ir al estado 71
+    '*'     desplazar e ir al estado 144
+    '/'     desplazar e ir al estado 145
+    '+'     desplazar e ir al estado 146
+    '-'     desplazar e ir al estado 147
+    '&'     desplazar e ir al estado 148
+    '|'     desplazar e ir al estado 149
+    '='     desplazar e ir al estado 150
+    '('     desplazar e ir al estado 151
+    ';'     desplazar e ir al estado 152
+    '~'     desplazar e ir al estado 79
+    '!'     desplazar e ir al estado 153
+    '<'     desplazar e ir al estado 154
+    '>'     desplazar e ir al estado 155
+    '%'     desplazar e ir al estado 156
+    '^'     desplazar e ir al estado 157
+
+    operador_binario     ir al estado 158
+    operador_unario      ir al estado 159
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 160
+    operador_decremento  ir al estado 161
+    operador_relacional  ir al estado 162
+    operador_logico      ir al estado 163
+    operador_aritmetico  ir al estado 164
+    operador_nivel_bit   ir al estado 165
+
+
+estado 97
+
+   98 expresion: operador_unario . expresion
+
+    IDENTIFICADOR  desplazar e ir al estado 41
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    SIZEOF         desplazar e ir al estado 71
+    '*'            desplazar e ir al estado 72
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    nombre_variable      ir al estado 83
+    expresion            ir al estado 166
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 110
+    ref_dir_ind          ir al estado 111
+
+
+estado 98
+
+  109 operador_unario: cast .
+
+    $default  reduce usando la regla 109 (operador_unario)
+
+
+estado 99
+
+  110 operador_unario: operador_sizeof .
+
+    $default  reduce usando la regla 110 (operador_unario)
+
+
+estado 100
+
+  102 expresion: operador_incremento . lvalor
+  111 operador_unario: operador_incremento .
+
+    IDENTIFICADOR  desplazar e ir al estado 41
+    '*'            desplazar e ir al estado 167
+    '('            desplazar e ir al estado 168
+
+    IDENTIFICADOR  [reduce usando la regla 111 (operador_unario)]
+    '*'            [reduce usando la regla 111 (operador_unario)]
+    '('            [reduce usando la regla 111 (operador_unario)]
+    $default       reduce usando la regla 111 (operador_unario)
+
+    nombre_variable  ir al estado 83
+    nombre           ir al estado 169
+    lvalor           ir al estado 170
+    ref_dir_ind      ir al estado 111
+
+
+estado 101
+
+  103 expresion: operador_decremento . lvalor
+  112 operador_unario: operador_decremento .
+
+    IDENTIFICADOR  desplazar e ir al estado 41
+    '*'            desplazar e ir al estado 167
+    '('            desplazar e ir al estado 168
+
+    IDENTIFICADOR  [reduce usando la regla 112 (operador_unario)]
+    '*'            [reduce usando la regla 112 (operador_unario)]
+    '('            [reduce usando la regla 112 (operador_unario)]
+    $default       reduce usando la regla 112 (operador_unario)
+
+    nombre_variable  ir al estado 83
+    nombre           ir al estado 169
+    lvalor           ir al estado 171
+    ref_dir_ind      ir al estado 111
+
+
+estado 102
+
+   96 expresion: operando_expresion .
+
+    $default  reduce usando la regla 96 (expresion)
+
+
+estado 103
+
+  143 operando_expresion: nombre .
+  158 lvalor: nombre .
+
+    '*'       reduce usando la regla 143 (operando_expresion)
+    '*'       [reduce usando la regla 158 (lvalor)]
+    '/'       reduce usando la regla 143 (operando_expresion)
+    '/'       [reduce usando la regla 158 (lvalor)]
+    '+'       reduce usando la regla 143 (operando_expresion)
+    '+'       [reduce usando la regla 158 (lvalor)]
+    '-'       reduce usando la regla 143 (operando_expresion)
+    '-'       [reduce usando la regla 158 (lvalor)]
+    '&'       reduce usando la regla 143 (operando_expresion)
+    '&'       [reduce usando la regla 158 (lvalor)]
+    '|'       reduce usando la regla 143 (operando_expresion)
+    '|'       [reduce usando la regla 158 (lvalor)]
+    '='       reduce usando la regla 143 (operando_expresion)
+    '='       [reduce usando la regla 158 (lvalor)]
+    ')'       reduce usando la regla 143 (operando_expresion)
+    ')'       [reduce usando la regla 158 (lvalor)]
+    '<'       reduce usando la regla 143 (operando_expresion)
+    '<'       [reduce usando la regla 158 (lvalor)]
+    '>'       reduce usando la regla 143 (operando_expresion)
+    '>'       [reduce usando la regla 158 (lvalor)]
+    '%'       reduce usando la regla 143 (operando_expresion)
+    '%'       [reduce usando la regla 158 (lvalor)]
+    '^'       reduce usando la regla 143 (operando_expresion)
+    '^'       [reduce usando la regla 158 (lvalor)]
+    $default  reduce usando la regla 143 (operando_expresion)
+
+
+estado 104
+
+  144 operando_expresion: constante_numerica .
+
+    $default  reduce usando la regla 144 (operando_expresion)
+
+
+estado 105
+
+  145 operando_expresion: constante_caracter .
+
+    $default  reduce usando la regla 145 (operando_expresion)
+
+
+estado 106
+
+  146 operando_expresion: constante_cadena .
+
+    $default  reduce usando la regla 146 (operando_expresion)
+
+
+estado 107
+
+  149 constante_numerica: entero .
+
+    $default  reduce usando la regla 149 (constante_numerica)
+
+
+estado 108
+
+  150 constante_numerica: real .
+
+    $default  reduce usando la regla 150 (constante_numerica)
+
+
+estado 109
+
+   97 expresion: expresion_ternaria .
+
+    $default  reduce usando la regla 97 (expresion)
+
+
+estado 110
+
+   99 expresion: lvalor . operador_asignacion expresion
+  100          | lvalor . operador_incremento
+  101          | lvalor . operador_decremento
+
+    '*'  desplazar e ir al estado 172
+    '/'  desplazar e ir al estado 145
+    '+'  desplazar e ir al estado 146
+    '-'  desplazar e ir al estado 173
+    '&'  desplazar e ir al estado 174
+    '|'  desplazar e ir al estado 175
+    '<'  desplazar e ir al estado 176
+    '>'  desplazar e ir al estado 177
+    '%'  desplazar e ir al estado 156
+    '^'  desplazar e ir al estado 157
+
+    $default  reduce usando la regla 165 (D26)
+
+    operador_incremento  ir al estado 178
+    operador_decremento  ir al estado 179
+    operador_aritmetico  ir al estado 180
+    operador_nivel_bit   ir al estado 181
+    operador_asignacion  ir al estado 182
+    D26                  ir al estado 183
+    D27                  ir al estado 184
+
+
+estado 111
+
+  159 lvalor: ref_dir_ind .
+
+    $default  reduce usando la regla 159 (lvalor)
+
+
+estado 112
+
+   15 dec_var_loc: declaracion dec_var_loc .
+
+    $default  reduce usando la regla 15 (dec_var_loc)
+
+
+estado 113
+
+   51 especificacion_declaracion: '(' especificacion_declaracion ')' .
+
+    $default  reduce usando la regla 51 (especificacion_declaracion)
+
+
+estado 114
+
+   56 D18: '{' . D19 '}'
+
+    IDENTIFICADOR  desplazar e ir al estado 41
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    SIZEOF         desplazar e ir al estado 71
+    '*'            desplazar e ir al estado 72
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    nombre_variable      ir al estado 83
+    D19                  ir al estado 185
+    valor_inicial        ir al estado 186
+    expresion            ir al estado 117
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 110
+    ref_dir_ind          ir al estado 111
+
+
+estado 115
+
+   54 inicializacion_variable: '=' D18 .
+
+    $default  reduce usando la regla 54 (inicializacion_variable)
+
+
+estado 116
+
+   55 D18: valor_inicial .
+
+    $default  reduce usando la regla 55 (D18)
+
+
+estado 117
+
+   59 valor_inicial: expresion .
+   95 expresion: expresion . operador_binario expresion
+
+    SIZEOF  desplazar e ir al estado 71
+    '*'     desplazar e ir al estado 144
+    '/'     desplazar e ir al estado 145
+    '+'     desplazar e ir al estado 146
+    '-'     desplazar e ir al estado 147
+    '&'     desplazar e ir al estado 148
+    '|'     desplazar e ir al estado 149
+    '='     desplazar e ir al estado 150
+    '('     desplazar e ir al estado 151
+    '~'     desplazar e ir al estado 79
+    '!'     desplazar e ir al estado 153
+    '<'     desplazar e ir al estado 154
+    '>'     desplazar e ir al estado 155
+    '%'     desplazar e ir al estado 156
+    '^'     desplazar e ir al estado 157
+
+    $default  reduce usando la regla 59 (valor_inicial)
+
+    operador_binario     ir al estado 158
+    operador_unario      ir al estado 159
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 160
+    operador_decremento  ir al estado 161
+    operador_relacional  ir al estado 162
+    operador_logico      ir al estado 163
+    operador_aritmetico  ir al estado 164
+    operador_nivel_bit   ir al estado 165
+
+
+estado 118
+
+   29 D12: '.' . D13
+
+    IDENTIFICADOR  desplazar e ir al estado 41
+    '*'            desplazar e ir al estado 42
+    '('            desplazar e ir al estado 43
+
+    D13                         ir al estado 187
+    especificacion_declaracion  ir al estado 45
+    nombre_variable             ir al estado 46
+    declaracion_puntero         ir al estado 47
+
+
+estado 119
+
+   17 D13: especificacion_declaracion D10 D11 . ';'
+
+    ';'  desplazar e ir al estado 188
+
+
+estado 120
+
+   27 D11: D12 .
+
+    $default  reduce usando la regla 27 (D11)
+
+
+estado 121
+
+   89 etiqueta: IDENTIFICADOR ':' .
+
+    $default  reduce usando la regla 89 (etiqueta)
+
+
+estado 122
+
+   72 sentencia_break: BREAK ';' .
+
+    $default  reduce usando la regla 72 (sentencia_break)
+
+
+estado 123
+
+   73 sentencia_continue: CONTINUE ';' .
+
+    $default  reduce usando la regla 73 (sentencia_continue)
+
+
+estado 124
+
+   74 sentencia_default: DEFAULT ':' . sentencia
+
+    IDENTIFICADOR  desplazar e ir al estado 58
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    BREAK          desplazar e ir al estado 62
+    CONTINUE       desplazar e ir al estado 63
+    DEFAULT        desplazar e ir al estado 64
+    DO             desplazar e ir al estado 65
+    WHILE          desplazar e ir al estado 66
+    FOR            desplazar e ir al estado 67
+    GOTO           desplazar e ir al estado 68
+    IF             desplazar e ir al estado 69
+    RETURN         desplazar e ir al estado 70
+    SIZEOF         desplazar e ir al estado 71
+    '*'            desplazar e ir al estado 72
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    ';'            desplazar e ir al estado 78
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    nombre_variable      ir al estado 83
+    sentencia            ir al estado 189
+    sentencia_break      ir al estado 85
+    sentencia_continue   ir al estado 86
+    sentencia_default    ir al estado 87
+    bucle_do_while       ir al estado 88
+    bucle_for            ir al estado 89
+    sentencia_goto       ir al estado 90
+    sentencia_if         ir al estado 91
+    etiqueta             ir al estado 92
+    sentencia_NULL       ir al estado 93
+    sentencia_return     ir al estado 94
+    bucle_while          ir al estado 95
+    expresion            ir al estado 96
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 110
+    ref_dir_ind          ir al estado 111
+
+
+estado 125
+
+   75 bucle_do_while: DO sentencia . WHILE '(' expresion ')' ';'
+
+    WHILE  desplazar e ir al estado 190
+
+
+estado 126
+
+   94 bucle_while: WHILE '(' . expresion ')' sentencia
+
+    IDENTIFICADOR  desplazar e ir al estado 41
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    SIZEOF         desplazar e ir al estado 71
+    '*'            desplazar e ir al estado 72
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    nombre_variable      ir al estado 83
+    expresion            ir al estado 191
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 110
+    ref_dir_ind          ir al estado 111
+
+
+estado 127
+
+   76 bucle_for: FOR '(' . D20 ';' D22 ';' D20 ')' sentencia
+
+    IDENTIFICADOR  desplazar e ir al estado 41
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    SIZEOF         desplazar e ir al estado 71
+    '*'            desplazar e ir al estado 72
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    $default  reduce usando la regla 78 (D20)
+
+    nombre_variable      ir al estado 83
+    D20                  ir al estado 192
+    D21                  ir al estado 193
+    expresion            ir al estado 194
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 110
+    ref_dir_ind          ir al estado 111
+
+
+estado 128
+
+   89 etiqueta: IDENTIFICADOR . ':'
+
+    ':'  desplazar e ir al estado 121
+
+
+estado 129
+
+   83 sentencia_goto: GOTO etiqueta . ';'
+
+    ';'  desplazar e ir al estado 195
+
+
+estado 130
+
+   84 sentencia_if: IF '(' . expresion ')' sentencia D23
+
+    IDENTIFICADOR  desplazar e ir al estado 41
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    SIZEOF         desplazar e ir al estado 71
+    '*'            desplazar e ir al estado 72
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    nombre_variable      ir al estado 83
+    expresion            ir al estado 196
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 110
+    ref_dir_ind          ir al estado 111
+
+
+estado 131
+
+   91 sentencia_return: RETURN D25 . ';'
+
+    ';'  desplazar e ir al estado 197
+
+
+estado 132
+
+   92 D25: expresion .
+   95 expresion: expresion . operador_binario expresion
+
+    SIZEOF  desplazar e ir al estado 71
+    '*'     desplazar e ir al estado 144
+    '/'     desplazar e ir al estado 145
+    '+'     desplazar e ir al estado 146
+    '-'     desplazar e ir al estado 147
+    '&'     desplazar e ir al estado 148
+    '|'     desplazar e ir al estado 149
+    '='     desplazar e ir al estado 150
+    '('     desplazar e ir al estado 151
+    '~'     desplazar e ir al estado 79
+    '!'     desplazar e ir al estado 153
+    '<'     desplazar e ir al estado 154
+    '>'     desplazar e ir al estado 155
+    '%'     desplazar e ir al estado 156
+    '^'     desplazar e ir al estado 157
+
+    $default  reduce usando la regla 92 (D25)
+
+    operador_binario     ir al estado 158
+    operador_unario      ir al estado 159
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 160
+    operador_decremento  ir al estado 161
+    operador_relacional  ir al estado 162
+    operador_logico      ir al estado 163
+    operador_aritmetico  ir al estado 164
+    operador_nivel_bit   ir al estado 165
+
+
+estado 133
+
+  119 operador_sizeof: SIZEOF '(' . objeto ')'
+
+    IDENTIFICADOR  desplazar e ir al estado 41
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    LONG           desplazar e ir al estado 12
+    INT            desplazar e ir al estado 13
+    FLOAT          desplazar e ir al estado 14
+    CHAR           desplazar e ir al estado 15
+    DOUBLE         desplazar e ir al estado 16
+    SHORT          desplazar e ir al estado 20
+    UNSIGNED       desplazar e ir al estado 21
+    SIZEOF         desplazar e ir al estado 71
+    '*'            desplazar e ir al estado 72
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    tipo                 ir al estado 198
+    D14                  ir al estado 31
+    D15                  ir al estado 32
+    D16                  ir al estado 33
+    D17                  ir al estado 34
+    nombre_variable      ir al estado 83
+    expresion            ir al estado 199
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    objeto               ir al estado 200
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 110
+    ref_dir_ind          ir al estado 111
+
+
+estado 134
+
+   95 expresion: expresion . operador_binario expresion
+  162 expresion_puntero: expresion .
+
+    SIZEOF  desplazar e ir al estado 71
+    '*'     desplazar e ir al estado 144
+    '/'     desplazar e ir al estado 145
+    '+'     desplazar e ir al estado 146
+    '-'     desplazar e ir al estado 147
+    '&'     desplazar e ir al estado 148
+    '|'     desplazar e ir al estado 149
+    '='     desplazar e ir al estado 150
+    '('     desplazar e ir al estado 151
+    '~'     desplazar e ir al estado 79
+    '!'     desplazar e ir al estado 153
+    '<'     desplazar e ir al estado 154
+    '>'     desplazar e ir al estado 155
+    '%'     desplazar e ir al estado 156
+    '^'     desplazar e ir al estado 157
+
+    SIZEOF    [reduce usando la regla 162 (expresion_puntero)]
+    '*'       [reduce usando la regla 162 (expresion_puntero)]
+    '/'       [reduce usando la regla 162 (expresion_puntero)]
+    '+'       [reduce usando la regla 162 (expresion_puntero)]
+    '-'       [reduce usando la regla 162 (expresion_puntero)]
+    '&'       [reduce usando la regla 162 (expresion_puntero)]
+    '|'       [reduce usando la regla 162 (expresion_puntero)]
+    '='       [reduce usando la regla 162 (expresion_puntero)]
+    '('       [reduce usando la regla 162 (expresion_puntero)]
+    '~'       [reduce usando la regla 162 (expresion_puntero)]
+    '!'       [reduce usando la regla 162 (expresion_puntero)]
+    '<'       [reduce usando la regla 162 (expresion_puntero)]
+    '>'       [reduce usando la regla 162 (expresion_puntero)]
+    '%'       [reduce usando la regla 162 (expresion_puntero)]
+    '^'       [reduce usando la regla 162 (expresion_puntero)]
+    $default  reduce usando la regla 162 (expresion_puntero)
+
+    operador_binario     ir al estado 158
+    operador_unario      ir al estado 159
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 160
+    operador_decremento  ir al estado 161
+    operador_relacional  ir al estado 162
+    operador_logico      ir al estado 163
+    operador_aritmetico  ir al estado 164
+    operador_nivel_bit   ir al estado 165
+
+
+estado 135
+
+  161 ref_dir_ind: '*' expresion_puntero .
+
+    $default  reduce usando la regla 161 (ref_dir_ind)
+
+
+estado 136
+
+  118 cast: '(' tipo . ')'
+
+    ')'  desplazar e ir al estado 201
+
+
+estado 137
+
+   95 expresion: expresion . operador_binario expresion
+  147 operando_expresion: '(' expresion . ')'
+  157 expresion_ternaria: '(' expresion . ')' '?' expresion ':' expresion
+
+    SIZEOF  desplazar e ir al estado 71
+    '*'     desplazar e ir al estado 144
+    '/'     desplazar e ir al estado 145
+    '+'     desplazar e ir al estado 146
+    '-'     desplazar e ir al estado 147
+    '&'     desplazar e ir al estado 148
+    '|'     desplazar e ir al estado 149
+    '='     desplazar e ir al estado 150
+    '('     desplazar e ir al estado 151
+    ')'     desplazar e ir al estado 202
+    '~'     desplazar e ir al estado 79
+    '!'     desplazar e ir al estado 153
+    '<'     desplazar e ir al estado 154
+    '>'     desplazar e ir al estado 155
+    '%'     desplazar e ir al estado 156
+    '^'     desplazar e ir al estado 157
+
+    operador_binario     ir al estado 158
+    operador_unario      ir al estado 159
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 160
+    operador_decremento  ir al estado 161
+    operador_relacional  ir al estado 162
+    operador_logico      ir al estado 163
+    operador_aritmetico  ir al estado 164
+    operador_nivel_bit   ir al estado 165
+
+
+estado 138
+
+   99 expresion: lvalor . operador_asignacion expresion
+  100          | lvalor . operador_incremento
+  101          | lvalor . operador_decremento
+  160 lvalor: '(' lvalor . ')'
+
+    '*'  desplazar e ir al estado 172
+    '/'  desplazar e ir al estado 145
+    '+'  desplazar e ir al estado 146
+    '-'  desplazar e ir al estado 173
+    '&'  desplazar e ir al estado 174
+    '|'  desplazar e ir al estado 175
+    ')'  desplazar e ir al estado 203
+    '<'  desplazar e ir al estado 176
+    '>'  desplazar e ir al estado 177
+    '%'  desplazar e ir al estado 156
+    '^'  desplazar e ir al estado 157
+
+    $default  reduce usando la regla 165 (D26)
+
+    operador_incremento  ir al estado 178
+    operador_decremento  ir al estado 179
+    operador_aritmetico  ir al estado 180
+    operador_nivel_bit   ir al estado 181
+    operador_asignacion  ir al estado 182
+    D26                  ir al estado 183
+    D27                  ir al estado 184
+
+
+estado 139
+
+  153 D28: CARACTER .
+  154    | CARACTER . D28
+
+    CARACTER  desplazar e ir al estado 139
+
+    $default  reduce usando la regla 153 (D28)
+
+    D28  ir al estado 204
+
+
+estado 140
+
+  152 constante_cadena: '"' D28 . '"'
+
+    '"'  desplazar e ir al estado 205
+
+
+estado 141
+
+    1 Programa: MAIN '(' D1 ')' D2 '{' D3 D4 '}' .
+
+    $default  reduce usando la regla 1 (Programa)
+
+
+estado 142
+
+   11 D5: sentencia D5 .
+
+    $default  reduce usando la regla 11 (D5)
+
+
+estado 143
+
+   68 sentencia: etiqueta sentencia .
+
+    $default  reduce usando la regla 68 (sentencia)
+
+
+estado 144
+
+  113 operador_unario: '*' .
+  133 operador_aritmetico: '*' .
+
+    IDENTIFICADOR  reduce usando la regla 113 (operador_unario)
+    IDENTIFICADOR  [reduce usando la regla 133 (operador_aritmetico)]
+    NUMERO_ENTERO  reduce usando la regla 113 (operador_unario)
+    NUMERO_ENTERO  [reduce usando la regla 133 (operador_aritmetico)]
+    NUMERO_REAL    reduce usando la regla 113 (operador_unario)
+    NUMERO_REAL    [reduce usando la regla 133 (operador_aritmetico)]
+    CARACTER       reduce usando la regla 113 (operador_unario)
+    CARACTER       [reduce usando la regla 133 (operador_aritmetico)]
+    SIZEOF         reduce usando la regla 113 (operador_unario)
+    SIZEOF         [reduce usando la regla 133 (operador_aritmetico)]
+    '*'            reduce usando la regla 113 (operador_unario)
+    '*'            [reduce usando la regla 133 (operador_aritmetico)]
+    '+'            reduce usando la regla 113 (operador_unario)
+    '+'            [reduce usando la regla 133 (operador_aritmetico)]
+    '-'            reduce usando la regla 113 (operador_unario)
+    '-'            [reduce usando la regla 133 (operador_aritmetico)]
+    '&'            reduce usando la regla 113 (operador_unario)
+    '&'            [reduce usando la regla 133 (operador_aritmetico)]
+    '|'            reduce usando la regla 113 (operador_unario)
+    '|'            [reduce usando la regla 133 (operador_aritmetico)]
+    '('            reduce usando la regla 113 (operador_unario)
+    '('            [reduce usando la regla 133 (operador_aritmetico)]
+    '~'            reduce usando la regla 113 (operador_unario)
+    '~'            [reduce usando la regla 133 (operador_aritmetico)]
+    '"'            reduce usando la regla 113 (operador_unario)
+    '"'            [reduce usando la regla 133 (operador_aritmetico)]
+    $default       reduce usando la regla 113 (operador_unario)
+
+
+estado 145
+
+  136 operador_aritmetico: '/' .
+
+    $default  reduce usando la regla 136 (operador_aritmetico)
+
+
+estado 146
+
+  122 operador_incremento: '+' .
+  135 operador_aritmetico: '+' .
+
+    IDENTIFICADOR  reduce usando la regla 122 (operador_incremento)
+    IDENTIFICADOR  [reduce usando la regla 135 (operador_aritmetico)]
+    NUMERO_ENTERO  reduce usando la regla 122 (operador_incremento)
+    NUMERO_ENTERO  [reduce usando la regla 135 (operador_aritmetico)]
+    NUMERO_REAL    reduce usando la regla 122 (operador_incremento)
+    NUMERO_REAL    [reduce usando la regla 135 (operador_aritmetico)]
+    CARACTER       reduce usando la regla 122 (operador_incremento)
+    CARACTER       [reduce usando la regla 135 (operador_aritmetico)]
+    SIZEOF         reduce usando la regla 122 (operador_incremento)
+    SIZEOF         [reduce usando la regla 135 (operador_aritmetico)]
+    '*'            reduce usando la regla 122 (operador_incremento)
+    '*'            [reduce usando la regla 135 (operador_aritmetico)]
+    '+'            reduce usando la regla 122 (operador_incremento)
+    '+'            [reduce usando la regla 135 (operador_aritmetico)]
+    '-'            reduce usando la regla 122 (operador_incremento)
+    '-'            [reduce usando la regla 135 (operador_aritmetico)]
+    '&'            reduce usando la regla 122 (operador_incremento)
+    '&'            [reduce usando la regla 135 (operador_aritmetico)]
+    '|'            reduce usando la regla 122 (operador_incremento)
+    '|'            [reduce usando la regla 135 (operador_aritmetico)]
+    '='            reduce usando la regla 122 (operador_incremento)
+    '='            [reduce usando la regla 135 (operador_aritmetico)]
+    '('            reduce usando la regla 122 (operador_incremento)
+    '('            [reduce usando la regla 135 (operador_aritmetico)]
+    '~'            reduce usando la regla 122 (operador_incremento)
+    '~'            [reduce usando la regla 135 (operador_aritmetico)]
+    '"'            reduce usando la regla 122 (operador_incremento)
+    '"'            [reduce usando la regla 135 (operador_aritmetico)]
+    $default       reduce usando la regla 122 (operador_incremento)
+
+
+estado 147
+
+  115 operador_unario: '-' .
+  123 operador_decremento: '-' .
+  134 operador_aritmetico: '-' .
+
+    IDENTIFICADOR  reduce usando la regla 115 (operador_unario)
+    IDENTIFICADOR  [reduce usando la regla 123 (operador_decremento)]
+    IDENTIFICADOR  [reduce usando la regla 134 (operador_aritmetico)]
+    NUMERO_ENTERO  reduce usando la regla 115 (operador_unario)
+    NUMERO_ENTERO  [reduce usando la regla 123 (operador_decremento)]
+    NUMERO_ENTERO  [reduce usando la regla 134 (operador_aritmetico)]
+    NUMERO_REAL    reduce usando la regla 115 (operador_unario)
+    NUMERO_REAL    [reduce usando la regla 123 (operador_decremento)]
+    NUMERO_REAL    [reduce usando la regla 134 (operador_aritmetico)]
+    CARACTER       reduce usando la regla 115 (operador_unario)
+    CARACTER       [reduce usando la regla 123 (operador_decremento)]
+    CARACTER       [reduce usando la regla 134 (operador_aritmetico)]
+    SIZEOF         reduce usando la regla 115 (operador_unario)
+    SIZEOF         [reduce usando la regla 123 (operador_decremento)]
+    SIZEOF         [reduce usando la regla 134 (operador_aritmetico)]
+    '*'            reduce usando la regla 115 (operador_unario)
+    '*'            [reduce usando la regla 123 (operador_decremento)]
+    '*'            [reduce usando la regla 134 (operador_aritmetico)]
+    '+'            reduce usando la regla 115 (operador_unario)
+    '+'            [reduce usando la regla 123 (operador_decremento)]
+    '+'            [reduce usando la regla 134 (operador_aritmetico)]
+    '-'            reduce usando la regla 115 (operador_unario)
+    '-'            [reduce usando la regla 123 (operador_decremento)]
+    '-'            [reduce usando la regla 134 (operador_aritmetico)]
+    '&'            reduce usando la regla 115 (operador_unario)
+    '&'            [reduce usando la regla 123 (operador_decremento)]
+    '&'            [reduce usando la regla 134 (operador_aritmetico)]
+    '|'            reduce usando la regla 115 (operador_unario)
+    '|'            [reduce usando la regla 123 (operador_decremento)]
+    '|'            [reduce usando la regla 134 (operador_aritmetico)]
+    '('            reduce usando la regla 115 (operador_unario)
+    '('            [reduce usando la regla 123 (operador_decremento)]
+    '('            [reduce usando la regla 134 (operador_aritmetico)]
+    '~'            reduce usando la regla 115 (operador_unario)
+    '~'            [reduce usando la regla 123 (operador_decremento)]
+    '~'            [reduce usando la regla 134 (operador_aritmetico)]
+    '"'            reduce usando la regla 115 (operador_unario)
+    '"'            [reduce usando la regla 123 (operador_decremento)]
+    '"'            [reduce usando la regla 134 (operador_aritmetico)]
+    $default       reduce usando la regla 115 (operador_unario)
+
+
+estado 148
+
+  114 operador_unario: '&' .
+  130 operador_logico: '&' .
+  138 operador_nivel_bit: '&' .
+
+    IDENTIFICADOR  reduce usando la regla 114 (operador_unario)
+    IDENTIFICADOR  [reduce usando la regla 130 (operador_logico)]
+    IDENTIFICADOR  [reduce usando la regla 138 (operador_nivel_bit)]
+    NUMERO_ENTERO  reduce usando la regla 114 (operador_unario)
+    NUMERO_ENTERO  [reduce usando la regla 130 (operador_logico)]
+    NUMERO_ENTERO  [reduce usando la regla 138 (operador_nivel_bit)]
+    NUMERO_REAL    reduce usando la regla 114 (operador_unario)
+    NUMERO_REAL    [reduce usando la regla 130 (operador_logico)]
+    NUMERO_REAL    [reduce usando la regla 138 (operador_nivel_bit)]
+    CARACTER       reduce usando la regla 114 (operador_unario)
+    CARACTER       [reduce usando la regla 130 (operador_logico)]
+    CARACTER       [reduce usando la regla 138 (operador_nivel_bit)]
+    SIZEOF         reduce usando la regla 114 (operador_unario)
+    SIZEOF         [reduce usando la regla 130 (operador_logico)]
+    SIZEOF         [reduce usando la regla 138 (operador_nivel_bit)]
+    '*'            reduce usando la regla 114 (operador_unario)
+    '*'            [reduce usando la regla 130 (operador_logico)]
+    '*'            [reduce usando la regla 138 (operador_nivel_bit)]
+    '+'            reduce usando la regla 114 (operador_unario)
+    '+'            [reduce usando la regla 130 (operador_logico)]
+    '+'            [reduce usando la regla 138 (operador_nivel_bit)]
+    '-'            reduce usando la regla 114 (operador_unario)
+    '-'            [reduce usando la regla 130 (operador_logico)]
+    '-'            [reduce usando la regla 138 (operador_nivel_bit)]
+    '&'            reduce usando la regla 114 (operador_unario)
+    '&'            [reduce usando la regla 130 (operador_logico)]
+    '&'            [reduce usando la regla 138 (operador_nivel_bit)]
+    '|'            reduce usando la regla 114 (operador_unario)
+    '|'            [reduce usando la regla 130 (operador_logico)]
+    '|'            [reduce usando la regla 138 (operador_nivel_bit)]
+    '('            reduce usando la regla 114 (operador_unario)
+    '('            [reduce usando la regla 130 (operador_logico)]
+    '('            [reduce usando la regla 138 (operador_nivel_bit)]
+    '~'            reduce usando la regla 114 (operador_unario)
+    '~'            [reduce usando la regla 130 (operador_logico)]
+    '~'            [reduce usando la regla 138 (operador_nivel_bit)]
+    '"'            reduce usando la regla 114 (operador_unario)
+    '"'            [reduce usando la regla 130 (operador_logico)]
+    '"'            [reduce usando la regla 138 (operador_nivel_bit)]
+    $default       reduce usando la regla 114 (operador_unario)
+
+
+estado 149
+
+  117 operador_unario: '|' .
+  131 operador_logico: '|' .
+  139 operador_nivel_bit: '|' .
+
+    IDENTIFICADOR  reduce usando la regla 117 (operador_unario)
+    IDENTIFICADOR  [reduce usando la regla 131 (operador_logico)]
+    IDENTIFICADOR  [reduce usando la regla 139 (operador_nivel_bit)]
+    NUMERO_ENTERO  reduce usando la regla 117 (operador_unario)
+    NUMERO_ENTERO  [reduce usando la regla 131 (operador_logico)]
+    NUMERO_ENTERO  [reduce usando la regla 139 (operador_nivel_bit)]
+    NUMERO_REAL    reduce usando la regla 117 (operador_unario)
+    NUMERO_REAL    [reduce usando la regla 131 (operador_logico)]
+    NUMERO_REAL    [reduce usando la regla 139 (operador_nivel_bit)]
+    CARACTER       reduce usando la regla 117 (operador_unario)
+    CARACTER       [reduce usando la regla 131 (operador_logico)]
+    CARACTER       [reduce usando la regla 139 (operador_nivel_bit)]
+    SIZEOF         reduce usando la regla 117 (operador_unario)
+    SIZEOF         [reduce usando la regla 131 (operador_logico)]
+    SIZEOF         [reduce usando la regla 139 (operador_nivel_bit)]
+    '*'            reduce usando la regla 117 (operador_unario)
+    '*'            [reduce usando la regla 131 (operador_logico)]
+    '*'            [reduce usando la regla 139 (operador_nivel_bit)]
+    '+'            reduce usando la regla 117 (operador_unario)
+    '+'            [reduce usando la regla 131 (operador_logico)]
+    '+'            [reduce usando la regla 139 (operador_nivel_bit)]
+    '-'            reduce usando la regla 117 (operador_unario)
+    '-'            [reduce usando la regla 131 (operador_logico)]
+    '-'            [reduce usando la regla 139 (operador_nivel_bit)]
+    '&'            reduce usando la regla 117 (operador_unario)
+    '&'            [reduce usando la regla 131 (operador_logico)]
+    '&'            [reduce usando la regla 139 (operador_nivel_bit)]
+    '|'            reduce usando la regla 117 (operador_unario)
+    '|'            [reduce usando la regla 131 (operador_logico)]
+    '|'            [reduce usando la regla 139 (operador_nivel_bit)]
+    '('            reduce usando la regla 117 (operador_unario)
+    '('            [reduce usando la regla 131 (operador_logico)]
+    '('            [reduce usando la regla 139 (operador_nivel_bit)]
+    '~'            reduce usando la regla 117 (operador_unario)
+    '~'            [reduce usando la regla 131 (operador_logico)]
+    '~'            [reduce usando la regla 139 (operador_nivel_bit)]
+    '"'            reduce usando la regla 117 (operador_unario)
+    '"'            [reduce usando la regla 131 (operador_logico)]
+    '"'            [reduce usando la regla 139 (operador_nivel_bit)]
+    $default       reduce usando la regla 117 (operador_unario)
+
+
+estado 150
+
+  124 operador_relacional: '=' .
+
+    $default  reduce usando la regla 124 (operador_relacional)
+
+
+estado 151
+
+  118 cast: '(' . tipo ')'
+
+    LONG      desplazar e ir al estado 12
+    INT       desplazar e ir al estado 13
+    FLOAT     desplazar e ir al estado 14
+    CHAR      desplazar e ir al estado 15
+    DOUBLE    desplazar e ir al estado 16
+    SHORT     desplazar e ir al estado 20
+    UNSIGNED  desplazar e ir al estado 21
+
+    tipo  ir al estado 136
+    D14   ir al estado 31
+    D15   ir al estado 32
+    D16   ir al estado 33
+    D17   ir al estado 34
+
+
+estado 152
+
+   64 sentencia: expresion ';' .
+
+    $default  reduce usando la regla 64 (sentencia)
+
+
+estado 153
+
+  125 operador_relacional: '!' .
+  132 operador_logico: '!' .
+
+    IDENTIFICADOR  reduce usando la regla 125 (operador_relacional)
+    IDENTIFICADOR  [reduce usando la regla 132 (operador_logico)]
+    NUMERO_ENTERO  reduce usando la regla 125 (operador_relacional)
+    NUMERO_ENTERO  [reduce usando la regla 132 (operador_logico)]
+    NUMERO_REAL    reduce usando la regla 125 (operador_relacional)
+    NUMERO_REAL    [reduce usando la regla 132 (operador_logico)]
+    CARACTER       reduce usando la regla 125 (operador_relacional)
+    CARACTER       [reduce usando la regla 132 (operador_logico)]
+    SIZEOF         reduce usando la regla 125 (operador_relacional)
+    SIZEOF         [reduce usando la regla 132 (operador_logico)]
+    '*'            reduce usando la regla 125 (operador_relacional)
+    '*'            [reduce usando la regla 132 (operador_logico)]
+    '+'            reduce usando la regla 125 (operador_relacional)
+    '+'            [reduce usando la regla 132 (operador_logico)]
+    '-'            reduce usando la regla 125 (operador_relacional)
+    '-'            [reduce usando la regla 132 (operador_logico)]
+    '&'            reduce usando la regla 125 (operador_relacional)
+    '&'            [reduce usando la regla 132 (operador_logico)]
+    '|'            reduce usando la regla 125 (operador_relacional)
+    '|'            [reduce usando la regla 132 (operador_logico)]
+    '('            reduce usando la regla 125 (operador_relacional)
+    '('            [reduce usando la regla 132 (operador_logico)]
+    '~'            reduce usando la regla 125 (operador_relacional)
+    '~'            [reduce usando la regla 132 (operador_logico)]
+    '"'            reduce usando la regla 125 (operador_relacional)
+    '"'            [reduce usando la regla 132 (operador_logico)]
+    $default       reduce usando la regla 125 (operador_relacional)
+
+
+estado 154
+
+  126 operador_relacional: '<' .
+  128                    | '<' .
+  141 operador_nivel_bit: '<' .
+
+    IDENTIFICADOR  reduce usando la regla 126 (operador_relacional)
+    IDENTIFICADOR  [reduce usando la regla 128 (operador_relacional)]
+    IDENTIFICADOR  [reduce usando la regla 141 (operador_nivel_bit)]
+    NUMERO_ENTERO  reduce usando la regla 126 (operador_relacional)
+    NUMERO_ENTERO  [reduce usando la regla 128 (operador_relacional)]
+    NUMERO_ENTERO  [reduce usando la regla 141 (operador_nivel_bit)]
+    NUMERO_REAL    reduce usando la regla 126 (operador_relacional)
+    NUMERO_REAL    [reduce usando la regla 128 (operador_relacional)]
+    NUMERO_REAL    [reduce usando la regla 141 (operador_nivel_bit)]
+    CARACTER       reduce usando la regla 126 (operador_relacional)
+    CARACTER       [reduce usando la regla 128 (operador_relacional)]
+    CARACTER       [reduce usando la regla 141 (operador_nivel_bit)]
+    SIZEOF         reduce usando la regla 126 (operador_relacional)
+    SIZEOF         [reduce usando la regla 128 (operador_relacional)]
+    SIZEOF         [reduce usando la regla 141 (operador_nivel_bit)]
+    '*'            reduce usando la regla 126 (operador_relacional)
+    '*'            [reduce usando la regla 128 (operador_relacional)]
+    '*'            [reduce usando la regla 141 (operador_nivel_bit)]
+    '+'            reduce usando la regla 126 (operador_relacional)
+    '+'            [reduce usando la regla 128 (operador_relacional)]
+    '+'            [reduce usando la regla 141 (operador_nivel_bit)]
+    '-'            reduce usando la regla 126 (operador_relacional)
+    '-'            [reduce usando la regla 128 (operador_relacional)]
+    '-'            [reduce usando la regla 141 (operador_nivel_bit)]
+    '&'            reduce usando la regla 126 (operador_relacional)
+    '&'            [reduce usando la regla 128 (operador_relacional)]
+    '&'            [reduce usando la regla 141 (operador_nivel_bit)]
+    '|'            reduce usando la regla 126 (operador_relacional)
+    '|'            [reduce usando la regla 128 (operador_relacional)]
+    '|'            [reduce usando la regla 141 (operador_nivel_bit)]
+    '('            reduce usando la regla 126 (operador_relacional)
+    '('            [reduce usando la regla 128 (operador_relacional)]
+    '('            [reduce usando la regla 141 (operador_nivel_bit)]
+    '~'            reduce usando la regla 126 (operador_relacional)
+    '~'            [reduce usando la regla 128 (operador_relacional)]
+    '~'            [reduce usando la regla 141 (operador_nivel_bit)]
+    '"'            reduce usando la regla 126 (operador_relacional)
+    '"'            [reduce usando la regla 128 (operador_relacional)]
+    '"'            [reduce usando la regla 141 (operador_nivel_bit)]
+    $default       reduce usando la regla 126 (operador_relacional)
+
+
+estado 155
+
+  127 operador_relacional: '>' .
+  129                    | '>' .
+  142 operador_nivel_bit: '>' .
+
+    IDENTIFICADOR  reduce usando la regla 127 (operador_relacional)
+    IDENTIFICADOR  [reduce usando la regla 129 (operador_relacional)]
+    IDENTIFICADOR  [reduce usando la regla 142 (operador_nivel_bit)]
+    NUMERO_ENTERO  reduce usando la regla 127 (operador_relacional)
+    NUMERO_ENTERO  [reduce usando la regla 129 (operador_relacional)]
+    NUMERO_ENTERO  [reduce usando la regla 142 (operador_nivel_bit)]
+    NUMERO_REAL    reduce usando la regla 127 (operador_relacional)
+    NUMERO_REAL    [reduce usando la regla 129 (operador_relacional)]
+    NUMERO_REAL    [reduce usando la regla 142 (operador_nivel_bit)]
+    CARACTER       reduce usando la regla 127 (operador_relacional)
+    CARACTER       [reduce usando la regla 129 (operador_relacional)]
+    CARACTER       [reduce usando la regla 142 (operador_nivel_bit)]
+    SIZEOF         reduce usando la regla 127 (operador_relacional)
+    SIZEOF         [reduce usando la regla 129 (operador_relacional)]
+    SIZEOF         [reduce usando la regla 142 (operador_nivel_bit)]
+    '*'            reduce usando la regla 127 (operador_relacional)
+    '*'            [reduce usando la regla 129 (operador_relacional)]
+    '*'            [reduce usando la regla 142 (operador_nivel_bit)]
+    '+'            reduce usando la regla 127 (operador_relacional)
+    '+'            [reduce usando la regla 129 (operador_relacional)]
+    '+'            [reduce usando la regla 142 (operador_nivel_bit)]
+    '-'            reduce usando la regla 127 (operador_relacional)
+    '-'            [reduce usando la regla 129 (operador_relacional)]
+    '-'            [reduce usando la regla 142 (operador_nivel_bit)]
+    '&'            reduce usando la regla 127 (operador_relacional)
+    '&'            [reduce usando la regla 129 (operador_relacional)]
+    '&'            [reduce usando la regla 142 (operador_nivel_bit)]
+    '|'            reduce usando la regla 127 (operador_relacional)
+    '|'            [reduce usando la regla 129 (operador_relacional)]
+    '|'            [reduce usando la regla 142 (operador_nivel_bit)]
+    '('            reduce usando la regla 127 (operador_relacional)
+    '('            [reduce usando la regla 129 (operador_relacional)]
+    '('            [reduce usando la regla 142 (operador_nivel_bit)]
+    '~'            reduce usando la regla 127 (operador_relacional)
+    '~'            [reduce usando la regla 129 (operador_relacional)]
+    '~'            [reduce usando la regla 142 (operador_nivel_bit)]
+    '"'            reduce usando la regla 127 (operador_relacional)
+    '"'            [reduce usando la regla 129 (operador_relacional)]
+    '"'            [reduce usando la regla 142 (operador_nivel_bit)]
+    $default       reduce usando la regla 127 (operador_relacional)
+
+
+estado 156
+
+  137 operador_aritmetico: '%' .
+
+    $default  reduce usando la regla 137 (operador_aritmetico)
+
+
+estado 157
+
+  140 operador_nivel_bit: '^' .
+
+    $default  reduce usando la regla 140 (operador_nivel_bit)
+
+
+estado 158
+
+   95 expresion: expresion operador_binario . expresion
+
+    IDENTIFICADOR  desplazar e ir al estado 41
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    SIZEOF         desplazar e ir al estado 71
+    '*'            desplazar e ir al estado 72
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    nombre_variable      ir al estado 83
+    expresion            ir al estado 206
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 110
+    ref_dir_ind          ir al estado 111
+
+
+estado 159
+
+  104 operador_binario: operador_unario .
+
+    $default  reduce usando la regla 104 (operador_binario)
+
+
+estado 160
+
+  111 operador_unario: operador_incremento .
+
+    $default  reduce usando la regla 111 (operador_unario)
+
+
+estado 161
+
+  112 operador_unario: operador_decremento .
+
+    $default  reduce usando la regla 112 (operador_unario)
+
+
+estado 162
+
+  105 operador_binario: operador_relacional .
+
+    $default  reduce usando la regla 105 (operador_binario)
+
+
+estado 163
+
+  106 operador_binario: operador_logico .
+
+    $default  reduce usando la regla 106 (operador_binario)
+
+
+estado 164
+
+  107 operador_binario: operador_aritmetico .
+
+    $default  reduce usando la regla 107 (operador_binario)
+
+
+estado 165
+
+  108 operador_binario: operador_nivel_bit .
+
+    $default  reduce usando la regla 108 (operador_binario)
+
+
+estado 166
+
+   95 expresion: expresion . operador_binario expresion
+   98          | operador_unario expresion .
+
+    SIZEOF  desplazar e ir al estado 71
+    '*'     desplazar e ir al estado 144
+    '/'     desplazar e ir al estado 145
+    '+'     desplazar e ir al estado 146
+    '-'     desplazar e ir al estado 147
+    '&'     desplazar e ir al estado 148
+    '|'     desplazar e ir al estado 149
+    '='     desplazar e ir al estado 150
+    '('     desplazar e ir al estado 151
+    '~'     desplazar e ir al estado 79
+    '!'     desplazar e ir al estado 153
+    '<'     desplazar e ir al estado 154
+    '>'     desplazar e ir al estado 155
+    '%'     desplazar e ir al estado 156
+    '^'     desplazar e ir al estado 157
+
+    SIZEOF    [reduce usando la regla 98 (expresion)]
+    '*'       [reduce usando la regla 98 (expresion)]
+    '/'       [reduce usando la regla 98 (expresion)]
+    '+'       [reduce usando la regla 98 (expresion)]
+    '-'       [reduce usando la regla 98 (expresion)]
+    '&'       [reduce usando la regla 98 (expresion)]
+    '|'       [reduce usando la regla 98 (expresion)]
+    '='       [reduce usando la regla 98 (expresion)]
+    '('       [reduce usando la regla 98 (expresion)]
+    '~'       [reduce usando la regla 98 (expresion)]
+    '!'       [reduce usando la regla 98 (expresion)]
+    '<'       [reduce usando la regla 98 (expresion)]
+    '>'       [reduce usando la regla 98 (expresion)]
+    '%'       [reduce usando la regla 98 (expresion)]
+    '^'       [reduce usando la regla 98 (expresion)]
+    $default  reduce usando la regla 98 (expresion)
+
+    operador_binario     ir al estado 158
+    operador_unario      ir al estado 159
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 160
+    operador_decremento  ir al estado 161
+    operador_relacional  ir al estado 162
+    operador_logico      ir al estado 163
+    operador_aritmetico  ir al estado 164
+    operador_nivel_bit   ir al estado 165
+
+
+estado 167
+
+  161 ref_dir_ind: '*' . expresion_puntero
+
+    IDENTIFICADOR  desplazar e ir al estado 41
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    SIZEOF         desplazar e ir al estado 71
+    '*'            desplazar e ir al estado 72
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    nombre_variable      ir al estado 83
+    expresion            ir al estado 134
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 110
+    ref_dir_ind          ir al estado 111
+    expresion_puntero    ir al estado 135
+
+
+estado 168
+
+  160 lvalor: '(' . lvalor ')'
+
+    IDENTIFICADOR  desplazar e ir al estado 41
+    '*'            desplazar e ir al estado 167
+    '('            desplazar e ir al estado 168
+
+    nombre_variable  ir al estado 83
+    nombre           ir al estado 169
+    lvalor           ir al estado 207
+    ref_dir_ind      ir al estado 111
+
+
+estado 169
+
+  158 lvalor: nombre .
+
+    $default  reduce usando la regla 158 (lvalor)
+
+
+estado 170
+
+  102 expresion: operador_incremento lvalor .
+
+    $default  reduce usando la regla 102 (expresion)
+
+
+estado 171
+
+  103 expresion: operador_decremento lvalor .
+
+    $default  reduce usando la regla 103 (expresion)
+
+
+estado 172
+
+  133 operador_aritmetico: '*' .
+
+    $default  reduce usando la regla 133 (operador_aritmetico)
+
+
+estado 173
+
+  123 operador_decremento: '-' .
+  134 operador_aritmetico: '-' .
+
+    '='       reduce usando la regla 123 (operador_decremento)
+    '='       [reduce usando la regla 134 (operador_aritmetico)]
+    $default  reduce usando la regla 123 (operador_decremento)
+
+
+estado 174
+
+  138 operador_nivel_bit: '&' .
+
+    $default  reduce usando la regla 138 (operador_nivel_bit)
+
+
+estado 175
+
+  139 operador_nivel_bit: '|' .
+
+    $default  reduce usando la regla 139 (operador_nivel_bit)
+
+
+estado 176
+
+  141 operador_nivel_bit: '<' .
+
+    $default  reduce usando la regla 141 (operador_nivel_bit)
+
+
+estado 177
+
+  142 operador_nivel_bit: '>' .
+
+    $default  reduce usando la regla 142 (operador_nivel_bit)
+
+
+estado 178
+
+  100 expresion: lvalor operador_incremento .
+
+    $default  reduce usando la regla 100 (expresion)
+
+
+estado 179
+
+  101 expresion: lvalor operador_decremento .
+
+    $default  reduce usando la regla 101 (expresion)
+
+
+estado 180
+
+  166 D27: operador_aritmetico .
+
+    $default  reduce usando la regla 166 (D27)
+
+
+estado 181
+
+  167 D27: operador_nivel_bit .
+
+    $default  reduce usando la regla 167 (D27)
+
+
+estado 182
+
+   99 expresion: lvalor operador_asignacion . expresion
+
+    IDENTIFICADOR  desplazar e ir al estado 41
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    SIZEOF         desplazar e ir al estado 71
+    '*'            desplazar e ir al estado 72
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    nombre_variable      ir al estado 83
+    expresion            ir al estado 208
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 110
+    ref_dir_ind          ir al estado 111
+
+
+estado 183
+
+  163 operador_asignacion: D26 . '='
+
+    '='  desplazar e ir al estado 209
+
+
+estado 184
+
+  164 D26: D27 .
+
+    $default  reduce usando la regla 164 (D26)
+
+
+estado 185
+
+   56 D18: '{' D19 . '}'
+
+    '}'  desplazar e ir al estado 210
+
+
+estado 186
+
+   57 D19: valor_inicial .
+   58    | valor_inicial . ',' D19
+
+    ','  desplazar e ir al estado 211
+
+    $default  reduce usando la regla 57 (D19)
+
+
+estado 187
+
+   29 D12: '.' D13 .
+
+    $default  reduce usando la regla 29 (D12)
+
+
+estado 188
+
+   17 D13: especificacion_declaracion D10 D11 ';' .
+
+    $default  reduce usando la regla 17 (D13)
+
+
+estado 189
+
+   74 sentencia_default: DEFAULT ':' sentencia .
+
+    $default  reduce usando la regla 74 (sentencia_default)
+
+
+estado 190
+
+   75 bucle_do_while: DO sentencia WHILE . '(' expresion ')' ';'
+
+    '('  desplazar e ir al estado 212
+
+
+estado 191
+
+   94 bucle_while: WHILE '(' expresion . ')' sentencia
+   95 expresion: expresion . operador_binario expresion
+
+    SIZEOF  desplazar e ir al estado 71
+    '*'     desplazar e ir al estado 144
+    '/'     desplazar e ir al estado 145
+    '+'     desplazar e ir al estado 146
+    '-'     desplazar e ir al estado 147
+    '&'     desplazar e ir al estado 148
+    '|'     desplazar e ir al estado 149
+    '='     desplazar e ir al estado 150
+    '('     desplazar e ir al estado 151
+    ')'     desplazar e ir al estado 213
+    '~'     desplazar e ir al estado 79
+    '!'     desplazar e ir al estado 153
+    '<'     desplazar e ir al estado 154
+    '>'     desplazar e ir al estado 155
+    '%'     desplazar e ir al estado 156
+    '^'     desplazar e ir al estado 157
+
+    operador_binario     ir al estado 158
+    operador_unario      ir al estado 159
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 160
+    operador_decremento  ir al estado 161
+    operador_relacional  ir al estado 162
+    operador_logico      ir al estado 163
+    operador_aritmetico  ir al estado 164
+    operador_nivel_bit   ir al estado 165
+
+
+estado 192
+
+   76 bucle_for: FOR '(' D20 . ';' D22 ';' D20 ')' sentencia
+
+    ';'  desplazar e ir al estado 214
+
+
+estado 193
+
+   77 D20: D21 .
+
+    $default  reduce usando la regla 77 (D20)
+
+
+estado 194
+
+   79 D21: expresion .
+   80    | expresion . ',' D21
+   95 expresion: expresion . operador_binario expresion
+
+    SIZEOF  desplazar e ir al estado 71
+    '*'     desplazar e ir al estado 144
+    '/'     desplazar e ir al estado 145
+    '+'     desplazar e ir al estado 146
+    '-'     desplazar e ir al estado 147
+    '&'     desplazar e ir al estado 148
+    '|'     desplazar e ir al estado 149
+    '='     desplazar e ir al estado 150
+    '('     desplazar e ir al estado 151
+    ','     desplazar e ir al estado 215
+    '~'     desplazar e ir al estado 79
+    '!'     desplazar e ir al estado 153
+    '<'     desplazar e ir al estado 154
+    '>'     desplazar e ir al estado 155
+    '%'     desplazar e ir al estado 156
+    '^'     desplazar e ir al estado 157
+
+    $default  reduce usando la regla 79 (D21)
+
+    operador_binario     ir al estado 158
+    operador_unario      ir al estado 159
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 160
+    operador_decremento  ir al estado 161
+    operador_relacional  ir al estado 162
+    operador_logico      ir al estado 163
+    operador_aritmetico  ir al estado 164
+    operador_nivel_bit   ir al estado 165
+
+
+estado 195
+
+   83 sentencia_goto: GOTO etiqueta ';' .
+
+    $default  reduce usando la regla 83 (sentencia_goto)
+
+
+estado 196
+
+   84 sentencia_if: IF '(' expresion . ')' sentencia D23
+   95 expresion: expresion . operador_binario expresion
+
+    SIZEOF  desplazar e ir al estado 71
+    '*'     desplazar e ir al estado 144
+    '/'     desplazar e ir al estado 145
+    '+'     desplazar e ir al estado 146
+    '-'     desplazar e ir al estado 147
+    '&'     desplazar e ir al estado 148
+    '|'     desplazar e ir al estado 149
+    '='     desplazar e ir al estado 150
+    '('     desplazar e ir al estado 151
+    ')'     desplazar e ir al estado 216
+    '~'     desplazar e ir al estado 79
+    '!'     desplazar e ir al estado 153
+    '<'     desplazar e ir al estado 154
+    '>'     desplazar e ir al estado 155
+    '%'     desplazar e ir al estado 156
+    '^'     desplazar e ir al estado 157
+
+    operador_binario     ir al estado 158
+    operador_unario      ir al estado 159
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 160
+    operador_decremento  ir al estado 161
+    operador_relacional  ir al estado 162
+    operador_logico      ir al estado 163
+    operador_aritmetico  ir al estado 164
+    operador_nivel_bit   ir al estado 165
+
+
+estado 197
+
+   91 sentencia_return: RETURN D25 ';' .
+
+    $default  reduce usando la regla 91 (sentencia_return)
+
+
+estado 198
+
+  120 objeto: tipo .
+
+    $default  reduce usando la regla 120 (objeto)
+
+
+estado 199
+
+   95 expresion: expresion . operador_binario expresion
+  121 objeto: expresion .
+
+    SIZEOF  desplazar e ir al estado 71
+    '*'     desplazar e ir al estado 144
+    '/'     desplazar e ir al estado 145
+    '+'     desplazar e ir al estado 146
+    '-'     desplazar e ir al estado 147
+    '&'     desplazar e ir al estado 148
+    '|'     desplazar e ir al estado 149
+    '='     desplazar e ir al estado 150
+    '('     desplazar e ir al estado 151
+    '~'     desplazar e ir al estado 79
+    '!'     desplazar e ir al estado 153
+    '<'     desplazar e ir al estado 154
+    '>'     desplazar e ir al estado 155
+    '%'     desplazar e ir al estado 156
+    '^'     desplazar e ir al estado 157
+
+    $default  reduce usando la regla 121 (objeto)
+
+    operador_binario     ir al estado 158
+    operador_unario      ir al estado 159
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 160
+    operador_decremento  ir al estado 161
+    operador_relacional  ir al estado 162
+    operador_logico      ir al estado 163
+    operador_aritmetico  ir al estado 164
+    operador_nivel_bit   ir al estado 165
+
+
+estado 200
+
+  119 operador_sizeof: SIZEOF '(' objeto . ')'
+
+    ')'  desplazar e ir al estado 217
+
+
+estado 201
+
+  118 cast: '(' tipo ')' .
+
+    $default  reduce usando la regla 118 (cast)
+
+
+estado 202
+
+  147 operando_expresion: '(' expresion ')' .
+  157 expresion_ternaria: '(' expresion ')' . '?' expresion ':' expresion
+
+    '?'  desplazar e ir al estado 218
+
+    $default  reduce usando la regla 147 (operando_expresion)
+
+
+estado 203
+
+  160 lvalor: '(' lvalor ')' .
+
+    $default  reduce usando la regla 160 (lvalor)
+
+
+estado 204
+
+  154 D28: CARACTER D28 .
+
+    $default  reduce usando la regla 154 (D28)
+
+
+estado 205
+
+  152 constante_cadena: '"' D28 '"' .
+
+    $default  reduce usando la regla 152 (constante_cadena)
+
+
+estado 206
+
+   95 expresion: expresion . operador_binario expresion
+   95          | expresion operador_binario expresion .
+
+    SIZEOF  desplazar e ir al estado 71
+    '*'     desplazar e ir al estado 144
+    '/'     desplazar e ir al estado 145
+    '+'     desplazar e ir al estado 146
+    '-'     desplazar e ir al estado 147
+    '&'     desplazar e ir al estado 148
+    '|'     desplazar e ir al estado 149
+    '='     desplazar e ir al estado 150
+    '('     desplazar e ir al estado 151
+    '~'     desplazar e ir al estado 79
+    '!'     desplazar e ir al estado 153
+    '<'     desplazar e ir al estado 154
+    '>'     desplazar e ir al estado 155
+    '%'     desplazar e ir al estado 156
+    '^'     desplazar e ir al estado 157
+
+    SIZEOF    [reduce usando la regla 95 (expresion)]
+    '*'       [reduce usando la regla 95 (expresion)]
+    '/'       [reduce usando la regla 95 (expresion)]
+    '+'       [reduce usando la regla 95 (expresion)]
+    '-'       [reduce usando la regla 95 (expresion)]
+    '&'       [reduce usando la regla 95 (expresion)]
+    '|'       [reduce usando la regla 95 (expresion)]
+    '='       [reduce usando la regla 95 (expresion)]
+    '('       [reduce usando la regla 95 (expresion)]
+    '~'       [reduce usando la regla 95 (expresion)]
+    '!'       [reduce usando la regla 95 (expresion)]
+    '<'       [reduce usando la regla 95 (expresion)]
+    '>'       [reduce usando la regla 95 (expresion)]
+    '%'       [reduce usando la regla 95 (expresion)]
+    '^'       [reduce usando la regla 95 (expresion)]
+    $default  reduce usando la regla 95 (expresion)
+
+    operador_binario     ir al estado 158
+    operador_unario      ir al estado 159
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 160
+    operador_decremento  ir al estado 161
+    operador_relacional  ir al estado 162
+    operador_logico      ir al estado 163
+    operador_aritmetico  ir al estado 164
+    operador_nivel_bit   ir al estado 165
+
+
+estado 207
+
+  160 lvalor: '(' lvalor . ')'
+
+    ')'  desplazar e ir al estado 203
+
+
+estado 208
+
+   95 expresion: expresion . operador_binario expresion
+   99          | lvalor operador_asignacion expresion .
+
+    SIZEOF  desplazar e ir al estado 71
+    '*'     desplazar e ir al estado 144
+    '/'     desplazar e ir al estado 145
+    '+'     desplazar e ir al estado 146
+    '-'     desplazar e ir al estado 147
+    '&'     desplazar e ir al estado 148
+    '|'     desplazar e ir al estado 149
+    '='     desplazar e ir al estado 150
+    '('     desplazar e ir al estado 151
+    '~'     desplazar e ir al estado 79
+    '!'     desplazar e ir al estado 153
+    '<'     desplazar e ir al estado 154
+    '>'     desplazar e ir al estado 155
+    '%'     desplazar e ir al estado 156
+    '^'     desplazar e ir al estado 157
+
+    SIZEOF    [reduce usando la regla 99 (expresion)]
+    '*'       [reduce usando la regla 99 (expresion)]
+    '/'       [reduce usando la regla 99 (expresion)]
+    '+'       [reduce usando la regla 99 (expresion)]
+    '-'       [reduce usando la regla 99 (expresion)]
+    '&'       [reduce usando la regla 99 (expresion)]
+    '|'       [reduce usando la regla 99 (expresion)]
+    '='       [reduce usando la regla 99 (expresion)]
+    '('       [reduce usando la regla 99 (expresion)]
+    '~'       [reduce usando la regla 99 (expresion)]
+    '!'       [reduce usando la regla 99 (expresion)]
+    '<'       [reduce usando la regla 99 (expresion)]
+    '>'       [reduce usando la regla 99 (expresion)]
+    '%'       [reduce usando la regla 99 (expresion)]
+    '^'       [reduce usando la regla 99 (expresion)]
+    $default  reduce usando la regla 99 (expresion)
+
+    operador_binario     ir al estado 158
+    operador_unario      ir al estado 159
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 160
+    operador_decremento  ir al estado 161
+    operador_relacional  ir al estado 162
+    operador_logico      ir al estado 163
+    operador_aritmetico  ir al estado 164
+    operador_nivel_bit   ir al estado 165
+
+
+estado 209
+
+  163 operador_asignacion: D26 '=' .
+
+    $default  reduce usando la regla 163 (operador_asignacion)
+
+
+estado 210
+
+   56 D18: '{' D19 '}' .
+
+    $default  reduce usando la regla 56 (D18)
+
+
+estado 211
+
+   58 D19: valor_inicial ',' . D19
+
+    IDENTIFICADOR  desplazar e ir al estado 41
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    SIZEOF         desplazar e ir al estado 71
+    '*'            desplazar e ir al estado 72
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    nombre_variable      ir al estado 83
+    D19                  ir al estado 219
+    valor_inicial        ir al estado 186
+    expresion            ir al estado 117
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 110
+    ref_dir_ind          ir al estado 111
+
+
+estado 212
+
+   75 bucle_do_while: DO sentencia WHILE '(' . expresion ')' ';'
+
+    IDENTIFICADOR  desplazar e ir al estado 41
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    SIZEOF         desplazar e ir al estado 71
+    '*'            desplazar e ir al estado 72
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    nombre_variable      ir al estado 83
+    expresion            ir al estado 220
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 110
+    ref_dir_ind          ir al estado 111
+
+
+estado 213
+
+   94 bucle_while: WHILE '(' expresion ')' . sentencia
+
+    IDENTIFICADOR  desplazar e ir al estado 58
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    BREAK          desplazar e ir al estado 62
+    CONTINUE       desplazar e ir al estado 63
+    DEFAULT        desplazar e ir al estado 64
+    DO             desplazar e ir al estado 65
+    WHILE          desplazar e ir al estado 66
+    FOR            desplazar e ir al estado 67
+    GOTO           desplazar e ir al estado 68
+    IF             desplazar e ir al estado 69
+    RETURN         desplazar e ir al estado 70
+    SIZEOF         desplazar e ir al estado 71
+    '*'            desplazar e ir al estado 72
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    ';'            desplazar e ir al estado 78
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    nombre_variable      ir al estado 83
+    sentencia            ir al estado 221
+    sentencia_break      ir al estado 85
+    sentencia_continue   ir al estado 86
+    sentencia_default    ir al estado 87
+    bucle_do_while       ir al estado 88
+    bucle_for            ir al estado 89
+    sentencia_goto       ir al estado 90
+    sentencia_if         ir al estado 91
+    etiqueta             ir al estado 92
+    sentencia_NULL       ir al estado 93
+    sentencia_return     ir al estado 94
+    bucle_while          ir al estado 95
+    expresion            ir al estado 96
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 110
+    ref_dir_ind          ir al estado 111
+
+
+estado 214
+
+   76 bucle_for: FOR '(' D20 ';' . D22 ';' D20 ')' sentencia
+
+    IDENTIFICADOR  desplazar e ir al estado 41
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    SIZEOF         desplazar e ir al estado 71
+    '*'            desplazar e ir al estado 72
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    $default  reduce usando la regla 82 (D22)
+
+    nombre_variable      ir al estado 83
+    D22                  ir al estado 222
+    expresion            ir al estado 223
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 110
+    ref_dir_ind          ir al estado 111
+
+
+estado 215
+
+   80 D21: expresion ',' . D21
+
+    IDENTIFICADOR  desplazar e ir al estado 41
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    SIZEOF         desplazar e ir al estado 71
+    '*'            desplazar e ir al estado 72
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    nombre_variable      ir al estado 83
+    D21                  ir al estado 224
+    expresion            ir al estado 194
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 110
+    ref_dir_ind          ir al estado 111
+
+
+estado 216
+
+   84 sentencia_if: IF '(' expresion ')' . sentencia D23
+
+    IDENTIFICADOR  desplazar e ir al estado 58
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    BREAK          desplazar e ir al estado 62
+    CONTINUE       desplazar e ir al estado 63
+    DEFAULT        desplazar e ir al estado 64
+    DO             desplazar e ir al estado 65
+    WHILE          desplazar e ir al estado 66
+    FOR            desplazar e ir al estado 67
+    GOTO           desplazar e ir al estado 68
+    IF             desplazar e ir al estado 69
+    RETURN         desplazar e ir al estado 70
+    SIZEOF         desplazar e ir al estado 71
+    '*'            desplazar e ir al estado 72
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    ';'            desplazar e ir al estado 78
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    nombre_variable      ir al estado 83
+    sentencia            ir al estado 225
+    sentencia_break      ir al estado 85
+    sentencia_continue   ir al estado 86
+    sentencia_default    ir al estado 87
+    bucle_do_while       ir al estado 88
+    bucle_for            ir al estado 89
+    sentencia_goto       ir al estado 90
+    sentencia_if         ir al estado 91
+    etiqueta             ir al estado 92
+    sentencia_NULL       ir al estado 93
+    sentencia_return     ir al estado 94
+    bucle_while          ir al estado 95
+    expresion            ir al estado 96
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 110
+    ref_dir_ind          ir al estado 111
+
+
+estado 217
+
+  119 operador_sizeof: SIZEOF '(' objeto ')' .
+
+    $default  reduce usando la regla 119 (operador_sizeof)
+
+
+estado 218
+
+  157 expresion_ternaria: '(' expresion ')' '?' . expresion ':' expresion
+
+    IDENTIFICADOR  desplazar e ir al estado 41
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    SIZEOF         desplazar e ir al estado 71
+    '*'            desplazar e ir al estado 72
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    nombre_variable      ir al estado 83
+    expresion            ir al estado 226
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 110
+    ref_dir_ind          ir al estado 111
+
+
+estado 219
+
+   58 D19: valor_inicial ',' D19 .
+
+    $default  reduce usando la regla 58 (D19)
+
+
+estado 220
+
+   75 bucle_do_while: DO sentencia WHILE '(' expresion . ')' ';'
+   95 expresion: expresion . operador_binario expresion
+
+    SIZEOF  desplazar e ir al estado 71
+    '*'     desplazar e ir al estado 144
+    '/'     desplazar e ir al estado 145
+    '+'     desplazar e ir al estado 146
+    '-'     desplazar e ir al estado 147
+    '&'     desplazar e ir al estado 148
+    '|'     desplazar e ir al estado 149
+    '='     desplazar e ir al estado 150
+    '('     desplazar e ir al estado 151
+    ')'     desplazar e ir al estado 227
+    '~'     desplazar e ir al estado 79
+    '!'     desplazar e ir al estado 153
+    '<'     desplazar e ir al estado 154
+    '>'     desplazar e ir al estado 155
+    '%'     desplazar e ir al estado 156
+    '^'     desplazar e ir al estado 157
+
+    operador_binario     ir al estado 158
+    operador_unario      ir al estado 159
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 160
+    operador_decremento  ir al estado 161
+    operador_relacional  ir al estado 162
+    operador_logico      ir al estado 163
+    operador_aritmetico  ir al estado 164
+    operador_nivel_bit   ir al estado 165
+
+
+estado 221
+
+   94 bucle_while: WHILE '(' expresion ')' sentencia .
+
+    $default  reduce usando la regla 94 (bucle_while)
+
+
+estado 222
+
+   76 bucle_for: FOR '(' D20 ';' D22 . ';' D20 ')' sentencia
+
+    ';'  desplazar e ir al estado 228
+
+
+estado 223
+
+   81 D22: expresion .
+   95 expresion: expresion . operador_binario expresion
+
+    SIZEOF  desplazar e ir al estado 71
+    '*'     desplazar e ir al estado 144
+    '/'     desplazar e ir al estado 145
+    '+'     desplazar e ir al estado 146
+    '-'     desplazar e ir al estado 147
+    '&'     desplazar e ir al estado 148
+    '|'     desplazar e ir al estado 149
+    '='     desplazar e ir al estado 150
+    '('     desplazar e ir al estado 151
+    '~'     desplazar e ir al estado 79
+    '!'     desplazar e ir al estado 153
+    '<'     desplazar e ir al estado 154
+    '>'     desplazar e ir al estado 155
+    '%'     desplazar e ir al estado 156
+    '^'     desplazar e ir al estado 157
+
+    $default  reduce usando la regla 81 (D22)
+
+    operador_binario     ir al estado 158
+    operador_unario      ir al estado 159
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 160
+    operador_decremento  ir al estado 161
+    operador_relacional  ir al estado 162
+    operador_logico      ir al estado 163
+    operador_aritmetico  ir al estado 164
+    operador_nivel_bit   ir al estado 165
+
+
+estado 224
+
+   80 D21: expresion ',' D21 .
+
+    $default  reduce usando la regla 80 (D21)
+
+
+estado 225
+
+   84 sentencia_if: IF '(' expresion ')' sentencia . D23
+
+    ELSE  desplazar e ir al estado 229
+
+    ELSE      [reduce usando la regla 86 (D23)]
+    $default  reduce usando la regla 86 (D23)
+
+    D23  ir al estado 230
+    D24  ir al estado 231
+
+
+estado 226
+
+   95 expresion: expresion . operador_binario expresion
+  157 expresion_ternaria: '(' expresion ')' '?' expresion . ':' expresion
+
+    SIZEOF  desplazar e ir al estado 71
+    '*'     desplazar e ir al estado 144
+    '/'     desplazar e ir al estado 145
+    '+'     desplazar e ir al estado 146
+    '-'     desplazar e ir al estado 147
+    '&'     desplazar e ir al estado 148
+    '|'     desplazar e ir al estado 149
+    '='     desplazar e ir al estado 150
+    '('     desplazar e ir al estado 151
+    ':'     desplazar e ir al estado 232
+    '~'     desplazar e ir al estado 79
+    '!'     desplazar e ir al estado 153
+    '<'     desplazar e ir al estado 154
+    '>'     desplazar e ir al estado 155
+    '%'     desplazar e ir al estado 156
+    '^'     desplazar e ir al estado 157
+
+    operador_binario     ir al estado 158
+    operador_unario      ir al estado 159
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 160
+    operador_decremento  ir al estado 161
+    operador_relacional  ir al estado 162
+    operador_logico      ir al estado 163
+    operador_aritmetico  ir al estado 164
+    operador_nivel_bit   ir al estado 165
+
+
+estado 227
+
+   75 bucle_do_while: DO sentencia WHILE '(' expresion ')' . ';'
+
+    ';'  desplazar e ir al estado 233
+
+
+estado 228
+
+   76 bucle_for: FOR '(' D20 ';' D22 ';' . D20 ')' sentencia
+
+    IDENTIFICADOR  desplazar e ir al estado 41
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    SIZEOF         desplazar e ir al estado 71
+    '*'            desplazar e ir al estado 72
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    $default  reduce usando la regla 78 (D20)
+
+    nombre_variable      ir al estado 83
+    D20                  ir al estado 234
+    D21                  ir al estado 193
+    expresion            ir al estado 194
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 110
+    ref_dir_ind          ir al estado 111
+
+
+estado 229
+
+   87 D24: ELSE . sentencia
+   88    | ELSE . sentencia D24
+
+    IDENTIFICADOR  desplazar e ir al estado 58
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    BREAK          desplazar e ir al estado 62
+    CONTINUE       desplazar e ir al estado 63
+    DEFAULT        desplazar e ir al estado 64
+    DO             desplazar e ir al estado 65
+    WHILE          desplazar e ir al estado 66
+    FOR            desplazar e ir al estado 67
+    GOTO           desplazar e ir al estado 68
+    IF             desplazar e ir al estado 69
+    RETURN         desplazar e ir al estado 70
+    SIZEOF         desplazar e ir al estado 71
+    '*'            desplazar e ir al estado 72
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    ';'            desplazar e ir al estado 78
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    nombre_variable      ir al estado 83
+    sentencia            ir al estado 235
+    sentencia_break      ir al estado 85
+    sentencia_continue   ir al estado 86
+    sentencia_default    ir al estado 87
+    bucle_do_while       ir al estado 88
+    bucle_for            ir al estado 89
+    sentencia_goto       ir al estado 90
+    sentencia_if         ir al estado 91
+    etiqueta             ir al estado 92
+    sentencia_NULL       ir al estado 93
+    sentencia_return     ir al estado 94
+    bucle_while          ir al estado 95
+    expresion            ir al estado 96
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 110
+    ref_dir_ind          ir al estado 111
+
+
+estado 230
+
+   84 sentencia_if: IF '(' expresion ')' sentencia D23 .
+
+    $default  reduce usando la regla 84 (sentencia_if)
+
+
+estado 231
+
+   85 D23: D24 .
+
+    $default  reduce usando la regla 85 (D23)
+
+
+estado 232
+
+  157 expresion_ternaria: '(' expresion ')' '?' expresion ':' . expresion
+
+    IDENTIFICADOR  desplazar e ir al estado 41
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    SIZEOF         desplazar e ir al estado 71
+    '*'            desplazar e ir al estado 72
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    nombre_variable      ir al estado 83
+    expresion            ir al estado 236
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 110
+    ref_dir_ind          ir al estado 111
+
+
+estado 233
+
+   75 bucle_do_while: DO sentencia WHILE '(' expresion ')' ';' .
+
+    $default  reduce usando la regla 75 (bucle_do_while)
+
+
+estado 234
+
+   76 bucle_for: FOR '(' D20 ';' D22 ';' D20 . ')' sentencia
+
+    ')'  desplazar e ir al estado 237
+
+
+estado 235
+
+   87 D24: ELSE sentencia .
+   88    | ELSE sentencia . D24
+
+    $default  reduce usando la regla 87 (D24)
+
+    D24  ir al estado 238
+
+
+estado 236
+
+   95 expresion: expresion . operador_binario expresion
+  157 expresion_ternaria: '(' expresion ')' '?' expresion ':' expresion .
+
+    SIZEOF  desplazar e ir al estado 71
+    '*'     desplazar e ir al estado 144
+    '/'     desplazar e ir al estado 145
+    '+'     desplazar e ir al estado 146
+    '-'     desplazar e ir al estado 147
+    '&'     desplazar e ir al estado 148
+    '|'     desplazar e ir al estado 149
+    '='     desplazar e ir al estado 150
+    '('     desplazar e ir al estado 151
+    '~'     desplazar e ir al estado 79
+    '!'     desplazar e ir al estado 153
+    '<'     desplazar e ir al estado 154
+    '>'     desplazar e ir al estado 155
+    '%'     desplazar e ir al estado 156
+    '^'     desplazar e ir al estado 157
+
+    SIZEOF    [reduce usando la regla 157 (expresion_ternaria)]
+    '*'       [reduce usando la regla 157 (expresion_ternaria)]
+    '/'       [reduce usando la regla 157 (expresion_ternaria)]
+    '+'       [reduce usando la regla 157 (expresion_ternaria)]
+    '-'       [reduce usando la regla 157 (expresion_ternaria)]
+    '&'       [reduce usando la regla 157 (expresion_ternaria)]
+    '|'       [reduce usando la regla 157 (expresion_ternaria)]
+    '='       [reduce usando la regla 157 (expresion_ternaria)]
+    '('       [reduce usando la regla 157 (expresion_ternaria)]
+    '~'       [reduce usando la regla 157 (expresion_ternaria)]
+    '!'       [reduce usando la regla 157 (expresion_ternaria)]
+    '<'       [reduce usando la regla 157 (expresion_ternaria)]
+    '>'       [reduce usando la regla 157 (expresion_ternaria)]
+    '%'       [reduce usando la regla 157 (expresion_ternaria)]
+    '^'       [reduce usando la regla 157 (expresion_ternaria)]
+    $default  reduce usando la regla 157 (expresion_ternaria)
+
+    operador_binario     ir al estado 158
+    operador_unario      ir al estado 159
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 160
+    operador_decremento  ir al estado 161
+    operador_relacional  ir al estado 162
+    operador_logico      ir al estado 163
+    operador_aritmetico  ir al estado 164
+    operador_nivel_bit   ir al estado 165
+
+
+estado 237
+
+   76 bucle_for: FOR '(' D20 ';' D22 ';' D20 ')' . sentencia
+
+    IDENTIFICADOR  desplazar e ir al estado 58
+    NUMERO_ENTERO  desplazar e ir al estado 59
+    NUMERO_REAL    desplazar e ir al estado 60
+    CARACTER       desplazar e ir al estado 61
+    BREAK          desplazar e ir al estado 62
+    CONTINUE       desplazar e ir al estado 63
+    DEFAULT        desplazar e ir al estado 64
+    DO             desplazar e ir al estado 65
+    WHILE          desplazar e ir al estado 66
+    FOR            desplazar e ir al estado 67
+    GOTO           desplazar e ir al estado 68
+    IF             desplazar e ir al estado 69
+    RETURN         desplazar e ir al estado 70
+    SIZEOF         desplazar e ir al estado 71
+    '*'            desplazar e ir al estado 72
+    '+'            desplazar e ir al estado 73
+    '-'            desplazar e ir al estado 74
+    '&'            desplazar e ir al estado 75
+    '|'            desplazar e ir al estado 76
+    '('            desplazar e ir al estado 77
+    ';'            desplazar e ir al estado 78
+    '~'            desplazar e ir al estado 79
+    '"'            desplazar e ir al estado 80
+
+    nombre_variable      ir al estado 83
+    sentencia            ir al estado 239
+    sentencia_break      ir al estado 85
+    sentencia_continue   ir al estado 86
+    sentencia_default    ir al estado 87
+    bucle_do_while       ir al estado 88
+    bucle_for            ir al estado 89
+    sentencia_goto       ir al estado 90
+    sentencia_if         ir al estado 91
+    etiqueta             ir al estado 92
+    sentencia_NULL       ir al estado 93
+    sentencia_return     ir al estado 94
+    bucle_while          ir al estado 95
+    expresion            ir al estado 96
+    operador_unario      ir al estado 97
+    cast                 ir al estado 98
+    operador_sizeof      ir al estado 99
+    operador_incremento  ir al estado 100
+    operador_decremento  ir al estado 101
+    operando_expresion   ir al estado 102
+    nombre               ir al estado 103
+    constante_numerica   ir al estado 104
+    constante_caracter   ir al estado 105
+    constante_cadena     ir al estado 106
+    entero               ir al estado 107
+    real                 ir al estado 108
+    expresion_ternaria   ir al estado 109
+    lvalor               ir al estado 110
+    ref_dir_ind          ir al estado 111
+
+
+estado 238
+
+   88 D24: ELSE sentencia D24 .
+
+    $default  reduce usando la regla 88 (D24)
+
+
+estado 239
+
+   76 bucle_for: FOR '(' D20 ';' D22 ';' D20 ')' sentencia .
+
+    $default  reduce usando la regla 76 (bucle_for)

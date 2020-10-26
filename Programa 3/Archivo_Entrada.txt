@@ -1,0 +1,8 @@
+llamo Alberto , _Mono003_4
+short int 003 float (3+2) , 3 = 2 + 1  
+puntero static *char auto extern {viva,lavida}  
+float val = double val1 - long val2
+short 5 = unsigned
+register $s3 ; . Nlsjdflkjsdf
+asdasd,.a,eosfjdglkdfgknlkn4sdflks4,m.,m.
+ñ....

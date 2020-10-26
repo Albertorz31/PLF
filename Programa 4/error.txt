@@ -1,0 +1,16 @@
+main(numero_1,numero_2){
+    int variable1=4;
+    double *var;
+    (hi);
+    extern auto contenido;
+    unsigned cal={exp1,exp2,exp3};
+    float num= 5;
+    if(variable1=5)
+       for(i=5;i<10;i++)
+           i++;
+     else
+       i=0;
+
+     return i;
+
+     }
